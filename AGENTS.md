@@ -77,7 +77,9 @@ file is absent, and add a row above.
 - `git/config`: git config (MacBook only), linked as `~/.config/git`.
 - `nvim/init.lua`: the whole Neovim config. `nvim/lazy-lock.json` pins plugins.
 - `tmux/tmux.conf`: tmux config, linked as `~/.config/tmux`. `hop.pl` is a
-  hop.nvim-style jump for copy mode (`s`). `tokyonight_night.tmux` is a verbatim
+  hop.nvim-style jump for copy mode (`s`). `session-picker.sh` is the fzf
+  session picker on `prefix s` (custom order: "controller" first, "worker"
+  last), falling back to `choose-tree` without fzf. `tokyonight_night.tmux` is a verbatim
   copy of the upstream extra; refresh it from upstream rather than editing it.
 - `fish/config.fish`: env, PATH and aliases. `conf.d/tokyonight_night.fish`
   and `conf.d/tokyonight_night_fzf.fish` are verbatim upstream extras (the
