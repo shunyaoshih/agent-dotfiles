@@ -11,6 +11,7 @@ Check the dependencies first; they're listed under "Setting up a machine" in
 
 ```sh
 git clone https://github.com/shunyaoshih/agent-dotfiles.git ~/agent-dotfiles
+brew bundle --file ~/agent-dotfiles/Brewfile   # macOS only
 ~/agent-dotfiles/install.sh ~/local-dotfiles   # or omit the argument
 nvim --headless "+Lazy! restore" +qa           # plugins at the pinned versions
 ```

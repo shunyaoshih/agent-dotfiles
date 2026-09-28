@@ -42,8 +42,10 @@ about anything missing or too old. Don't install system packages without asking.
 | Ghostty | 1.3 | 1.3.1 | not used | `ghostty/`; 1.3 is needed for the AppleScript used by the `sg` alias |
 | Hack Nerd Font Mono | | ✓ | not used | Ghostty `font-family` |
 
-Then run `./install.sh LOCAL_DIR` (see below) and open a new shell. Update the
-version columns when a machine's versions change.
+On macOS, `brew bundle --file Brewfile` installs all of these; keep the
+Brewfile in sync with this table. Then run `./install.sh LOCAL_DIR` (see below)
+and open a new shell. Update the version columns when a machine's versions
+change.
 
 ## Per-machine config
 
@@ -65,6 +67,7 @@ file is absent, and add a row above.
 ## Layout
 
 - `install.sh`: symlinks configs into `~/.config` and links local files.
+- `Brewfile`: macOS dependencies for `brew bundle`.
 - `nvim/init.lua`: the whole Neovim config. `nvim/lazy-lock.json` pins plugins.
 - `tmux/tmux.conf`: tmux config, linked as `~/.config/tmux`. `hop.pl` is a
   hop.nvim-style jump for copy mode (`s`). `tokyonight_night.tmux` is a verbatim
