@@ -1,0 +1,4 @@
+# Template for ghostty/local.ghostty (untracked, per machine). Loaded after
+# config.ghostty, so it can override anything there.
+
+# font-size = 16

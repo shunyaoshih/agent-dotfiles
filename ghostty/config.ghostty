@@ -1,0 +1,31 @@
+# Ghostty config. Only the MacBook runs Ghostty; the workstation is reached
+# over SSH. See AGENTS.md.
+
+# Verbatim copy of tokyonight.nvim's extras/ghostty/tokyonight_night. Ghostty's
+# built-in TokyoNight themes use different bright colors.
+theme = tokyonight_night
+font-family = "Hack Nerd Font Mono Regular"
+font-size = 21
+
+copy-on-select = clipboard
+# Option sends Alt, for fish's Alt bindings (e.g. Alt-C from fzf, Alt-E).
+macos-option-as-alt = true
+# Over SSH, use TERM=xterm-256color, since remote hosts lack Ghostty's terminfo.
+shell-integration-features = ssh-env
+
+# Show or hide Ghostty from anywhere.
+keybind = global:alt+space=toggle_visibility
+
+# Ctrl+1..9 switches tmux windows: send the tmux prefix (C-a, \x01) + digit.
+keybind = ctrl+digit_1=text:\x011
+keybind = ctrl+digit_2=text:\x012
+keybind = ctrl+digit_3=text:\x013
+keybind = ctrl+digit_4=text:\x014
+keybind = ctrl+digit_5=text:\x015
+keybind = ctrl+digit_6=text:\x016
+keybind = ctrl+digit_7=text:\x017
+keybind = ctrl+digit_8=text:\x018
+keybind = ctrl+digit_9=text:\x019
+
+# Machine-specific config (untracked). See local.example.ghostty.
+config-file = ?local.ghostty

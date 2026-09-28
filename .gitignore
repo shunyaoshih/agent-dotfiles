@@ -1,0 +1,8 @@
+# Per-machine overrides live outside this repo and are symlinked in.
+local.*
+!local.example.*
+
+# fish writes universal variables here.
+fish/fish_variables
+
+.DS_Store
