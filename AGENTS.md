@@ -44,7 +44,8 @@ about anything missing or too old. Don't install system packages without asking.
 
 On macOS, `brew bundle --file Brewfile` installs all of these; keep the
 Brewfile in sync with this table. Then run `./install.sh LOCAL_DIR` (see below)
-and open a new shell. Update the version columns when a machine's versions
+and open a new shell. On macOS, also run `gh auth login` and `gh auth
+setup-git` so git can push to GitHub over HTTPS. Update the version columns when a machine's versions
 change.
 
 ## Per-machine config
@@ -61,6 +62,11 @@ tracked templates.
 | fish   | `fish/local.fish` | `source`d at the end of `config.fish` if present       |
 | Ghostty | `ghostty/local.ghostty` | `config-file = ?local.ghostty` (optional include) |
 
+Exception: git is only used on the MacBook, so `git/config` is fully tracked
+and there is no `local.*` file. The untracked `~/.gitconfig` is read after it
+and holds only what tools write (`git config --global`, `gh auth setup-git`).
+Put shared settings in `git/config`, never in `~/.gitconfig`.
+
 When adding a tool, give it a `local.*` hook that is skipped silently when the
 file is absent, and add a row above.
 
@@ -68,6 +74,7 @@ file is absent, and add a row above.
 
 - `install.sh`: symlinks configs into `~/.config` and links local files.
 - `Brewfile`: macOS dependencies for `brew bundle`.
+- `git/config`: git config (MacBook only), linked as `~/.config/git`.
 - `nvim/init.lua`: the whole Neovim config. `nvim/lazy-lock.json` pins plugins.
 - `tmux/tmux.conf`: tmux config, linked as `~/.config/tmux`. `hop.pl` is a
   hop.nvim-style jump for copy mode (`s`). `tokyonight_night.tmux` is a verbatim

@@ -32,6 +32,7 @@ link "$repo/nvim" "$HOME/.config/nvim"
 link "$repo/tmux" "$HOME/.config/tmux"
 link "$repo/fish" "$HOME/.config/fish"
 link "$repo/ghostty" "$HOME/.config/ghostty"
+link "$repo/git" "$HOME/.config/git"
 # These are loaded after (and override) the ~/.config versions.
 retire "$HOME/.tmux.conf"
 retire "$HOME/Library/Application Support/com.mitchellh.ghostty/config"

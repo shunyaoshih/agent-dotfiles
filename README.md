@@ -14,9 +14,10 @@ git clone https://github.com/shunyaoshih/agent-dotfiles.git ~/agent-dotfiles
 brew bundle --file ~/agent-dotfiles/Brewfile   # macOS only
 ~/agent-dotfiles/install.sh ~/local-dotfiles   # or omit the argument
 nvim --headless "+Lazy! restore" +qa           # plugins at the pinned versions
+gh auth login && gh auth setup-git             # macOS only: git over HTTPS
 ```
 
-`install.sh` symlinks `~/.config/{nvim,tmux,fish,ghostty}` to this repo and
+`install.sh` symlinks `~/.config/{nvim,tmux,fish,ghostty,git}` to this repo and
 backs up any real config it replaces. Then open a new shell and restart tmux.
 
 ## Per-machine overrides

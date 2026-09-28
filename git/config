@@ -1,0 +1,23 @@
+# Git config (used on the MacBook only). Machine state that tools write, such as
+# the credential lines from `gh auth setup-git`, goes to the untracked
+# ~/.gitconfig, which git reads after this file.
+
+[user]
+	name = shunyaoshih
+	email = shunyaoshih@gmail.com
+[alias]
+	st = status
+	cm = commit
+	ps = push
+	d = diff
+	a = add
+[init]
+	defaultBranch = main
+[push]
+	autoSetupRemote = true
+[pull]
+	ff = only
+[fetch]
+	prune = true
+[merge]
+	conflictStyle = zdiff3
