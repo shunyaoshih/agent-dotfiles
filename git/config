@@ -5,12 +5,6 @@
 [user]
 	name = shunyaoshih
 	email = shunyaoshih@gmail.com
-[alias]
-	st = status
-	cm = commit
-	ps = push
-	d = diff
-	a = add
 [init]
 	defaultBranch = main
 [push]
