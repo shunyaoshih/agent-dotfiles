@@ -14,6 +14,9 @@ by hand. Agents maintain this repo. Tools: Ghostty, tmux, fish, Neovim.
   between them; see "Setting up a machine".
 - fish syntax must work in both 3.7 and 4.x (notably, `bind` key names changed
   in 4.0).
+- Keep fish's non-interactive startup fast: put slow or interactive-only setup
+  (e.g. conda, key bindings) inside `status is-interactive`. tmux runs popups and
+  `run-shell` commands through `fish -c`, so their latency is fish's startup.
 - Do not use APIs newer than Neovim 0.11 (e.g. `vim.pack`) until the
   workstation upgrades. nvim-treesitter is out for the same reason: its master
   branch doesn't support 0.12, and its main branch is a different API.

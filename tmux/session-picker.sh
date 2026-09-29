@@ -6,6 +6,10 @@
 # Usage: session-picker.sh switch|kill|rename CLIENT
 # kill accepts several sessions (mark them with Tab).
 
+# The popup inherits the tmux server's environment, which lacks fzf's theme if
+# the server was started outside fish. The theme file is POSIX sh too.
+[ -n "$FZF_DEFAULT_OPTS" ] || . ~/.config/fish/conf.d/tokyonight_night_fzf.fish
+
 action=$1
 client=$2
 multi=
