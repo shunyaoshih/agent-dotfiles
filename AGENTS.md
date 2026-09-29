@@ -9,9 +9,9 @@ by hand. Agents maintain this repo. Tools: Ghostty, tmux, fish, Neovim.
   config over adding it.
 - Default keybindings. Do not add keymaps that duplicate or shadow built-in ones.
 - Ask the user before adding a plugin.
-- Every file must work on all machines: a personal MacBook and a work MacBook
-  (both macOS), and a work Linux workstation reached over SSH from the work
-  MacBook. Versions differ between them; see "Setting up a machine".
+- Every file must work on both machines: the personal MacBook (macOS) and the
+  work Linux workstation, reached over SSH from the MacBook. Versions differ
+  between them; see "Setting up a machine".
 - fish syntax must work in both 3.7 and 4.x (notably, `bind` key names changed
   in 4.0).
 - Keep fish's non-interactive startup fast: put slow or interactive-only setup
@@ -78,18 +78,13 @@ file is absent, and add a row above.
 - `install.sh`: symlinks configs into `~/.config` and links local files.
 - `Brewfile`: macOS dependencies for `brew bundle`.
 - `git/config`: git config (MacBook only), linked as `~/.config/git`.
-- `macos/open-url.sh`: opens http(s) URLs sent to a Unix socket; `install.sh`
-  registers it as a socket-activated launchd agent on macOS. The workstation's
-  `tmux/open-link.sh` reaches it through an SSH `RemoteForward` (see README), so
-  copy-mode `O` there opens links on the Mac.
 - `nvim/init.lua`: the whole Neovim config. `nvim/lazy-lock.json` pins plugins.
 - `tmux/tmux.conf`: tmux config, linked as `~/.config/tmux`. `hop.pl` is a
   hop.nvim-style jump for copy mode (`s`). `session-picker.sh` is the fzf
   session picker behind `prefix s`/`X`/`$` (switch/kill/rename; custom order:
   "controller" first, "worker" last), falling back to `choose-tree` without
   fzf. `open-link.sh` backs copy-mode `O`: it opens the OSC 8 link under the
-  cursor or the selected text (on macOS directly; on the workstation via the
-  Mac's `macos/open-url.sh`, falling back to the clipboard). When
+  cursor or the selected text (browser on macOS, clipboard elsewhere). When
   testing the picker, pass the user's `FZF_DEFAULT_OPTS` to the test server:
   the Tokyo Night fzf theme sets `--layout=reverse`, which changes which way
   Tab moves. `tokyonight_night.tmux` is a verbatim

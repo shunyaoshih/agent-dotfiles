@@ -38,31 +38,6 @@ retire "$HOME/.tmux.conf"
 retire "$HOME/Library/Application Support/com.mitchellh.ghostty/config"
 retire "$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
 
-# macOS: listen for URLs to open (see macos/open-url.sh). launchd runs the
-# script on demand, so nothing stays running.
-if [ "$(uname)" = Darwin ]; then
-	label=com.agent-dotfiles.open-url
-	plist="$HOME/Library/LaunchAgents/$label.plist"
-	sock="$HOME/.local/state/agent-dotfiles/open-url.sock"
-	mkdir -p "$(dirname "$plist")" "$(dirname "$sock")"
-	cat >"$plist" <<-PLIST
-	<?xml version="1.0" encoding="UTF-8"?>
-	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-	<plist version="1.0"><dict>
-	  <key>Label</key><string>$label</string>
-	  <key>ProgramArguments</key><array><string>$repo/macos/open-url.sh</string></array>
-	  <key>inetdCompatibility</key><dict><key>Wait</key><false/></dict>
-	  <key>Sockets</key><dict><key>Listener</key><dict>
-	    <key>SockPathName</key><string>$sock</string>
-	    <key>SockPathMode</key><integer>384</integer>
-	  </dict></dict>
-	</dict></plist>
-	PLIST
-	launchctl bootout "gui/$(id -u)/$label" 2>/dev/null || true
-	launchctl bootstrap "gui/$(id -u)" "$plist"
-	echo "$sock: launchd agent $label"
-fi
-
 if [ $# -gt 0 ]; then
 	local_dir=$(cd "$1" && pwd)
 	find "$local_dir" -type f -name 'local.*' ! -path '*/.git/*' | while read -r f; do

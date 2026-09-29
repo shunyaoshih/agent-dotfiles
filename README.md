@@ -39,20 +39,3 @@ gitignored. Each tool has a template: `nvim/local.example.lua`,
 | `st`, `sf`, `sg` | Reload the tmux, fish, or Ghostty config |
 
 `ginit` and `sg` exist only on macOS, where Ghostty runs.
-
-## Opening workstation links on your Mac
-
-In tmux copy mode, `O` opens the selected link. On a Mac it opens the browser
-directly. On a remote machine it sends the URL back to the Mac you SSH'd from,
-which needs one line in that Mac's `~/.ssh/config` (after running `install.sh`
-there):
-
-```
-Host <workstation>
-    RemoteForward /home/<remote-user>/.ssh/open-url.sock %d/.local/state/agent-dotfiles/open-url.sock
-```
-
-Without it, `O` copies the URL to your clipboard instead. If SSH warns
-"remote port forwarding failed", a stale socket from an earlier session is in
-the way: run `rm ~/.ssh/open-url.sock` on the workstation and reconnect. Only the
-first of several simultaneous SSH sessions gets the forward.
