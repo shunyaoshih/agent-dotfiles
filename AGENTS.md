@@ -83,7 +83,9 @@ file is absent, and add a row above.
   hop.nvim-style jump for copy mode (`s`). `session-picker.sh` is the fzf
   session picker behind `prefix s`/`X`/`$` (switch/kill/rename; custom order:
   "controller" first, "worker" last), falling back to `choose-tree` without
-  fzf. When testing it, pass the user's `FZF_DEFAULT_OPTS` to the test server:
+  fzf. `open-link.sh` backs copy-mode `O`: it opens the OSC 8 link under the
+  cursor or the selected text (browser on macOS, clipboard elsewhere). When
+  testing the picker, pass the user's `FZF_DEFAULT_OPTS` to the test server:
   the Tokyo Night fzf theme sets `--layout=reverse`, which changes which way
   Tab moves. `tokyonight_night.tmux` is a verbatim
   copy of the upstream extra; refresh it from upstream rather than editing it.
