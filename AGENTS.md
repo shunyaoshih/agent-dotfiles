@@ -82,7 +82,7 @@ file is absent, and add a row above.
 - `tmux/tmux.conf`: tmux config, linked as `~/.config/tmux`. `hop.pl` is a
   hop.nvim-style jump for copy mode (`s`). `session-picker.sh` is the fzf
   session picker behind `prefix s`/`X`/`$` (switch/kill/rename; custom order:
-  "controller" first, "worker" last), falling back to `choose-tree` without
+  "main", then "controller", "worker" last), falling back to `choose-tree` without
   fzf. `open-link.sh` backs copy-mode `O`: it opens the OSC 8 link under the
   cursor or the selected text (browser on macOS, clipboard elsewhere). When
   testing the picker, pass the user's `FZF_DEFAULT_OPTS` to the test server:
