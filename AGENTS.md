@@ -75,7 +75,8 @@ file is absent, and add a row above.
 
 ## Layout
 
-- `install.sh`: symlinks configs into `~/.config` and links local files.
+- `install.sh`: symlinks configs into `~/.config`, skills into
+  `~/.claude/skills`, and links local files.
 - `Brewfile`: macOS dependencies for `brew bundle`.
 - `git/config`: git config (MacBook only), linked as `~/.config/git`.
 - `nvim/init.lua`: the whole Neovim config. `nvim/lazy-lock.json` pins plugins.
@@ -98,6 +99,11 @@ file is absent, and add a row above.
   is a verbatim upstream extra. Validate with
   `/Applications/Ghostty.app/Contents/MacOS/ghostty +validate-config`; check the
   effective config with `+show-config`.
+- `claude/skills/`: Claude Code skills, each linked into `~/.claude/skills` on
+  its own (that directory also holds skills Claude Code syncs from claude.ai).
+  `organize-iphone` arranges the iPhone home screen over USB (MacBook only). Its
+  venv, app categories and layout backups are personal and live in
+  `~/.local/share/organize-iphone`, never in this repo.
 
 ## Testing Neovim changes
 

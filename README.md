@@ -1,8 +1,8 @@
 # agent-dotfiles
 
-Minimal configs for Ghostty, tmux, fish, and Neovim, built for working mostly
-through AI agents. All in the Tokyo Night theme. Maintained by agents; see
-[AGENTS.md](AGENTS.md) for the conventions.
+Minimal configs for Ghostty, tmux, fish, and Neovim, plus Claude Code skills,
+built for working mostly through AI agents. All in the Tokyo Night theme.
+Maintained by agents; see [AGENTS.md](AGENTS.md) for the conventions.
 
 ## Install
 
@@ -17,8 +17,9 @@ nvim --headless "+Lazy! restore" +qa           # plugins at the pinned versions
 gh auth login && gh auth setup-git             # macOS only: git over HTTPS
 ```
 
-`install.sh` symlinks `~/.config/{nvim,tmux,fish,ghostty,git}` to this repo and
-backs up any real config it replaces. Then open a new shell and restart tmux.
+`install.sh` symlinks `~/.config/{nvim,tmux,fish,ghostty,git}` and each skill
+in `~/.claude/skills` to this repo and backs up any real config it replaces.
+Then open a new shell and restart tmux.
 
 ## Per-machine overrides
 

@@ -33,6 +33,10 @@ link "$repo/tmux" "$HOME/.config/tmux"
 link "$repo/fish" "$HOME/.config/fish"
 link "$repo/ghostty" "$HOME/.config/ghostty"
 link "$repo/git" "$HOME/.config/git"
+# One link per skill: Claude Code keeps its own synced skills in ~/.claude/skills.
+for skill in "$repo"/claude/skills/*; do
+	link "$skill" "$HOME/.claude/skills/${skill##*/}"
+done
 # These are loaded after (and override) the ~/.config versions.
 retire "$HOME/.tmux.conf"
 retire "$HOME/Library/Application Support/com.mitchellh.ghostty/config"

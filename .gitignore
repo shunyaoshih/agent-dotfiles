@@ -5,4 +5,7 @@ local.*
 # fish writes universal variables here.
 fish/fish_variables
 
+# Bytecode from running the skill scripts.
+__pycache__/
+
 .DS_Store
