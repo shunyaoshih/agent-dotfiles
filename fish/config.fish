@@ -13,6 +13,7 @@ if status is-interactive; and command -q fzf
 end
 
 alias v=nvim
+alias c=claude
 alias t='tmux new-session -A -s main'
 alias md=mkdir
 alias lla='ls -a -l'

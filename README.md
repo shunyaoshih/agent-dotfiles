@@ -35,7 +35,8 @@ gitignored. Each tool has a template: `nvim/local.example.lua`,
 | Command | Does |
 |---|---|
 | `v` | `nvim` |
-| `t` | Attach to tmux session `0`, creating it if needed |
+| `c` | `claude` |
+| `t` | Attach to tmux session `main`, creating it if needed |
 | `vinit`, `tinit`, `finit`, `ginit` | Edit the Neovim, tmux, fish, or Ghostty config |
 | `st`, `sf`, `sg` | Reload the tmux, fish, or Ghostty config |
 
