@@ -9,6 +9,8 @@
 #        agents-dashboard.sh view                             fzf, in the _agents pane
 #        agents-dashboard.sh cursor                           fzf's load handler
 #        agents-dashboard.sh keep                             tmux's window-unlinked hook
+#        agents-dashboard.sh status                           blocked and done counts
+#                                                             for tmux's status-right
 #
 # fzf can't follow a row across a reload, so the cursor is restored by pane id:
 # F12 saves {1}, reloads, and the load handler moves back to that row with pos().
@@ -135,13 +137,22 @@ cursor)
 	fi
 	[ -z "$position" ] || printf 'pos(%s)+' "$position"
 	awk -F '\t' '
-		$2 == "working" { working++ }
-		$2 == "background" { background++ }
-		$2 == "idle" { idle++ }
+		{ count[$2]++ }
 		END {
-			printf "change-header(\033[1;38;2;122;162;247m● %d working\033[0m  \033[1;38;2;187;154;247m◐ %d background\033[0m  \033[1;38;2;115;122;162m○ %d idle\033[0m\n", working, background, idle
+			printf "change-header(\033[1;38;2;247;118;142m⚠ %d blocked\033[0m  \033[1;38;2;115;218;202m◆ %d done\033[0m  ", count["blocked"], count["done"]
+			printf "\033[1;38;2;122;162;247m● %d working\033[0m  \033[1;38;2;187;154;247m◐ %d background\033[0m  \033[1;38;2;115;122;162m○ %d idle\033[0m\n", count["working"], count["background"], count["idle"]
 			printf "\033[38;2;115;122;162menter jump · esc back · type to search · . jump labels\033[0m)"
 		}' "$rows"
+	;;
+status)
+	# Empty when nothing is blocked or done, so the status line only changes when
+	# an agent needs you.
+	"$snapshot" | awk -F '\t' '
+		{ count[$2]++ }
+		END {
+			if (count["blocked"]) printf "#[fg=#f7768e]⚠ %d ", count["blocked"]
+			if (count["done"]) printf "#[fg=#73daca]◆ %d ", count["done"]
+		}'
 	;;
 keep)
 	# A session can't be empty, so moving the dashboard out of a session where it's

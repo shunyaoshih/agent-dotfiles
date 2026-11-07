@@ -123,8 +123,14 @@ file is absent, and add a row above.
   session, window 1 of "main" by default. `agents-snapshot.pl` prints its rows and is the only part that
   knows where agent state comes from; it joins `tmux list-panes` to
   `~/.claude/sessions/*.json` on the %pane id and must never open the `.key` files
-  there. `tokyonight_night.tmux` is a verbatim copy of the upstream extra; refresh
-  it from upstream rather than editing it.
+  there. Blocked is Claude Code's own `waiting` status, which tested more reliable
+  than a Notification hook (it fires about 6 seconds late, and no hook fires when
+  a prompt is cancelled) or the pane's text (an agent's reply can contain the
+  prompt's words). Done is a turn that ended after the pane was last looked at,
+  which `pane-focus-in`/`-out` hooks record in the pane option `@agents_seen`. The
+  blocked and done counts are also in `status-right`, prepended to the theme's.
+  `tokyonight_night.tmux` is a verbatim copy of the upstream extra; refresh it
+  from upstream rather than editing it.
 - `fish/config.fish`: env, PATH and aliases. `conf.d/tokyonight_night.fish`
   and `conf.d/tokyonight_night_fzf.fish` are verbatim upstream extras (the
   latter is `extras/fzf/tokyonight_night.sh`, whose `export` syntax fish also
@@ -171,5 +177,7 @@ keys meant for the program, because `-K` garbles unbound keys such as `Down`
 3.8), so for popups write the keys to the client's pty instead.
 `display-message -c CLIENT` without `-t` doesn't report that client's session; use
 `list-clients -F`. To test the agent dashboard with fixtures, point the test
-server's `CLAUDE_CONFIG_DIR` at a directory with a `sessions/` folder. Apply
-changes to the live server with `tmux source-file ~/.config/tmux/tmux.conf`.
+server's `CLAUDE_CONFIG_DIR` at a directory with a `sessions/` folder. A pty
+client counts as focused; write `\e[O` and `\e[I` to its pty to test focus
+changes. Apply changes to the live server with
+`tmux source-file ~/.config/tmux/tmux.conf`.
