@@ -10,6 +10,8 @@ font-size = 21
 # which otherwise clip both ends of tmux's status line.
 window-padding-x = 8
 window-padding-y = 8
+# Keep dim text readable on the dark background.
+faint-opacity = 0.7
 
 copy-on-select = clipboard
 # Option sends Alt, for fish's Alt bindings (e.g. Alt-C from fzf, Alt-E).
