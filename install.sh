@@ -33,6 +33,9 @@ link "$repo/tmux" "$HOME/.config/tmux"
 link "$repo/fish" "$HOME/.config/fish"
 link "$repo/ghostty" "$HOME/.config/ghostty"
 link "$repo/git" "$HOME/.config/git"
+# Without this file, `git config --global` and `gh auth setup-git` write to
+# ~/.config/git/config, which is tracked.
+touch "$HOME/.gitconfig"
 # One link per skill: Claude Code keeps its own synced skills in ~/.claude/skills.
 for skill in "$repo"/claude/skills/*; do
 	link "$skill" "$HOME/.claude/skills/${skill##*/}"

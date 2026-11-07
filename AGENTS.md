@@ -81,7 +81,8 @@ tracked templates.
 Exception: git is only used on the MacBook, so `git/config` is fully tracked
 and there is no `local.*` file. The untracked `~/.gitconfig` is read after it
 and holds only what tools write (`git config --global`, `gh auth setup-git`).
-Put shared settings in `git/config`, never in `~/.gitconfig`.
+`install.sh` creates it, because git otherwise sends those writes to the tracked
+file. Put shared settings in `git/config`, never in `~/.gitconfig`.
 
 When adding a tool, give it a `local.*` hook that is skipped silently when the
 file is absent, and add a row above.
