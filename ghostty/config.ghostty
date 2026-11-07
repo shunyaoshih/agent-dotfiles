@@ -4,7 +4,7 @@
 # Verbatim copy of tokyonight.nvim's extras/ghostty/tokyonight_night. Ghostty's
 # built-in TokyoNight themes use different bright colors.
 theme = tokyonight_night
-font-family = "Hack Nerd Font Mono Regular"
+font-family = "Hack Nerd Font Mono"
 font-size = 21
 
 copy-on-select = clipboard
