@@ -1,7 +1,7 @@
 # agent-dotfiles
 
 Dotfiles for a user who develops mostly through AI agents and rarely edits text
-by hand. Agents maintain this repo. Tools: Ghostty, tmux, fish, Neovim.
+by hand. Agents maintain this repo. Tools: Ghostty, AeroSpace, tmux, fish, Neovim.
 
 ## Principles
 
@@ -43,6 +43,8 @@ about anything missing or too old. Don't install system packages without asking.
 | fish | 3.7 | 4.9 | 4.x | `fish/` |
 | fzf | 0.53 (`--highlight-line` in the theme; `fzf --fish` needs 0.48) | 0.74 | check | Ctrl-T / Ctrl-R / Alt-C in fish; skipped silently if missing, so a missing fzf won't show as an error |
 | Ghostty | 1.3 | 1.4 | not used | `ghostty/`; 1.3 is needed for the AppleScript used by the `sg` alias |
+| AeroSpace | 0.21 | 0.21 | not used | `aerospace/`; comes from the developer's own Homebrew tap |
+| Chrome, Telegram | any | ✓ | not used | their AeroSpace workspaces |
 | Claude Code | any | ✓ | check | the `c` alias, `claude/skills/` |
 
 On macOS, `brew bundle --file Brewfile` installs all of these; keep the
@@ -60,6 +62,10 @@ put `claude` on PATH. Besides the README's install commands:
 - Ask the user to run `macos/defaults.sh`, which changes system settings.
 - Ask the user to open Ghostty, approve the first launch, and allow Accessibility
   access, which the `alt+space` global keybind needs.
+- Ask the user to open AeroSpace and allow Accessibility access, without which it
+  can't manage windows. Then check its config with `aerospace reload-config
+  --dry-run --no-gui`, which only works while it's running.
+- Ask the user to install LINE from the App Store, since it isn't on Homebrew.
 
 ## Per-machine config
 
@@ -79,7 +85,8 @@ Exception: git is only used on the MacBook, so `git/config` is fully tracked
 and there is no `local.*` file. The untracked `~/.gitconfig` is read after it
 and holds only what tools write (`git config --global`, `gh auth setup-git`).
 `install.sh` creates it, because git otherwise sends those writes to the tracked
-file. Put shared settings in `git/config`, never in `~/.gitconfig`.
+file. Put shared settings in `git/config`, never in `~/.gitconfig`. AeroSpace has
+no `local.*` file either: it's MacBook only, and its config has no include.
 
 When adding a tool, give it a `local.*` hook that is skipped silently when the
 file is absent, and add a row above.
@@ -95,10 +102,10 @@ file is absent, and add a row above.
   system settings. To find a setting's key, diff `defaults read` from before and
   after the user changes it by hand. Settings that can't be scripted, such as
   privacy permissions, go in the README's install steps. The menu bar stays
-  visible because hiding it on a notched display frees no room for windows: macOS
-  still leaves the notch's strip out of `visibleFrame`, and a window manager can't
-  place windows there (AeroSpace with a negative gap didn't; Rectangle's source
-  says the same).
+  visible because hiding it on a notched display frees only about 5 points for
+  windows: macOS still leaves the notch's strip out of `visibleFrame`, and a
+  window manager can't place windows there (AeroSpace with a negative gap didn't;
+  Rectangle's source says the same).
 - `git/config`: git config (MacBook only), linked as `~/.config/git`.
 - `nvim/init.lua`: the whole Neovim config. `nvim/lazy-lock.json` pins plugins.
 - `tmux/tmux.conf`: tmux config, linked as `~/.config/tmux`. `hop.pl` is a
@@ -120,6 +127,13 @@ file is absent, and add a row above.
   is a verbatim upstream extra. Validate with
   `/Applications/Ghostty.app/Contents/MacOS/ghostty +validate-config`; check the
   effective config with `+show-config`.
+- `aerospace/aerospace.toml`: AeroSpace config (MacBook only), linked as
+  `~/.config/aerospace`. Each main app gets a workspace, and LINE and Telegram
+  share one, reached with `ctrl+alt+letter`, because AeroSpace's default
+  `alt+letter` keys would take over fish's Alt bindings in Ghostty. Other apps
+  float, through a catch-all rule that needs an explicit `if = 'true'`. Apply
+  changes with `aerospace reload-config`. Test a binding without pressing keys
+  using `aerospace trigger-binding --mode main KEYS`.
 - `claude/skills/`: Claude Code skills, each linked into `~/.claude/skills` on
   its own (that directory also holds skills Claude Code syncs from claude.ai).
   `organize-iphone` arranges the iPhone home screen over USB (MacBook only). Its

@@ -1,6 +1,8 @@
 # macOS dependencies (see "Setting up a machine" in AGENTS.md).
 # Install with: brew bundle --file ~/agent-dotfiles/Brewfile
 
+tap "nikitabobko/tap" # AeroSpace isn't in Homebrew's own casks
+
 brew "fish"
 brew "fzf"
 brew "git"
@@ -10,3 +12,6 @@ brew "tmux"
 
 cask "claude-code" # the `claude` CLI; the desktop app doesn't put one on PATH
 cask "ghostty"
+cask "google-chrome"
+cask "nikitabobko/tap/aerospace"
+cask "telegram"

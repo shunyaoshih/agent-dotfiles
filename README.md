@@ -1,8 +1,8 @@
 # agent-dotfiles
 
-Minimal configs for Ghostty, tmux, fish, and Neovim, plus macOS settings and
-Claude Code skills, built for working mostly through AI agents. All in the Tokyo
-Night theme.
+Minimal configs for Ghostty, AeroSpace, tmux, fish, and Neovim, plus macOS
+settings and Claude Code skills, built for working mostly through AI agents. All
+in the Tokyo Night theme.
 Maintained by agents; see [AGENTS.md](AGENTS.md) for the conventions.
 
 ## Install
@@ -18,8 +18,8 @@ brew bundle --file ~/agent-dotfiles/Brewfile   # macOS only
 nvim --headless "+Lazy! restore" +qa           # plugins at the pinned versions
 ```
 
-`install.sh` symlinks `~/.config/{nvim,tmux,fish,ghostty,git}` and each skill
-in `~/.claude/skills` to this repo and backs up any real config it replaces.
+`install.sh` symlinks `~/.config/{nvim,tmux,fish,ghostty,aerospace,git}` and each
+skill in `~/.claude/skills` to this repo and backs up any real config it replaces.
 
 On macOS, finish with these yourself, since they need a browser login or your
 password:
@@ -31,8 +31,10 @@ chsh -s /opt/homebrew/bin/fish                 # Ghostty and tmux use the login 
 ```
 
 Then run `~/agent-dotfiles/macos/defaults.sh` to apply the macOS settings, and
-open Ghostty and allow Accessibility access for the `alt+space` global keybind.
-Open a new shell and restart tmux.
+open Ghostty and AeroSpace and allow Accessibility access for each: Ghostty's
+`alt+space` global keybind needs it, and AeroSpace can't manage windows without it.
+Install LINE from the App Store, since it isn't on Homebrew. Open a new shell and
+restart tmux.
 
 ## Per-machine overrides
 
@@ -54,3 +56,12 @@ gitignored. Each tool has a template: `nvim/local.example.lua`,
 | `st`, `sf`, `sg` | Reload the tmux, fish, or Ghostty config |
 
 `ginit` and `sg` exist only on macOS, where Ghostty runs.
+
+In AeroSpace, each main app has its own workspace:
+
+| Keys | Does |
+|---|---|
+| `ctrl+alt+a`, `c`, `g`, `m` | Jump to Claude, Chrome, Ghostty, or messaging (LINE and Telegram), opening them if needed |
+| `ctrl+alt+shift+` the same letter | Send the current window to that workspace, where it splits the screen |
+| `ctrl+alt+left`, `right` | Switch between windows on a workspace |
+| `ctrl+alt+shift+left`, `right` | Swap their sides |

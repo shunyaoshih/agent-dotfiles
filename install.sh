@@ -32,6 +32,7 @@ link "$repo/nvim" "$HOME/.config/nvim"
 link "$repo/tmux" "$HOME/.config/tmux"
 link "$repo/fish" "$HOME/.config/fish"
 link "$repo/ghostty" "$HOME/.config/ghostty"
+link "$repo/aerospace" "$HOME/.config/aerospace"
 link "$repo/git" "$HOME/.config/git"
 # Without this file, `git config --global` and `gh auth setup-git` write to
 # ~/.config/git/config, which is tracked.
