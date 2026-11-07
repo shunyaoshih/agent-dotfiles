@@ -1,8 +1,8 @@
 #!/bin/sh
 # Pick tmux sessions with fzf, then switch to, kill, or rename them. "main"
 # comes first, then sessions containing "controller", then the rest, and those
-# containing "worker" last; each group is sorted by name. Run from tmux.conf in
-# a display-popup.
+# containing "worker" last; each group is sorted by name. _agents, the agent
+# dashboard's hidden session, is left out. Run from tmux.conf in a display-popup.
 #
 # Usage: session-picker.sh switch|kill|rename CLIENT
 # kill accepts several sessions (mark them with Tab). Press . to label each row,
@@ -19,7 +19,7 @@ multi=
 [ "$action" = kill ] && multi=--multi
 
 tmux list-sessions -F '#{session_name}' |
-	awk '{ print ($0 == "main" ? 0 : /controller/ ? 1 : /worker/ ? 3 : 2) "\t" $0 }' |
+	awk '$0 != "_agents" { print ($0 == "main" ? 0 : /controller/ ? 1 : /worker/ ? 3 : 2) "\t" $0 }' |
 	sort -t "$(printf '\t')" -k1,1n -k2 |
 	cut -f2- |
 	fzf $multi --bind '.:jump-accept' --jump-labels "ntesaroibwfmuc,l'yzkhd\"gjxqpv" --prompt "$action> " --preview 'tmux capture-pane -ep -t ={}:' |

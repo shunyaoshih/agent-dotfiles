@@ -39,9 +39,9 @@ about anything missing or too old. Don't install system packages without asking.
 | Neovim | 0.11 | 0.12 | 0.11.x | `nvim/` |
 | git | any | ✓ | ✓ | lazy.nvim bootstraps and installs plugins with it |
 | tmux | 3.5 | 3.8 | 3.6b | `tmux/` (`send-keys -K`, popups) |
-| perl | 5 at `/usr/bin/perl` | ✓ | ✓ | `tmux/hop.pl` |
+| perl | 5 at `/usr/bin/perl` | ✓ | ✓ | `tmux/hop.pl`; `tmux/agents-snapshot.pl` (MacBook only, needs core JSON::PP) |
 | fish | 3.7 | 4.9 | 4.x | `fish/` |
-| fzf | 0.53 (`--highlight-line` in the theme; `fzf --fish` needs 0.48) | 0.74 | check | Ctrl-T / Ctrl-R / Alt-C in fish; skipped silently if missing, so a missing fzf won't show as an error |
+| fzf | 0.53 (`--highlight-line` in the theme; `fzf --fish` needs 0.48) | 0.74 | check | Ctrl-T / Ctrl-R / Alt-C in fish and the tmux agent dashboard; skipped silently if missing, so a missing fzf won't show as an error |
 | Ghostty | 1.3 | 1.4 | not used | `ghostty/`; 1.3 is needed for the AppleScript used by the `sg` alias |
 | AeroSpace | 0.21 | 0.21 | not used | `aerospace/`; comes from the developer's own Homebrew tap |
 | Chrome, Telegram | any | ✓ | not used | their AeroSpace workspaces |
@@ -117,8 +117,14 @@ file is absent, and add a row above.
   "main", then "controller", "worker" last), falling back to `choose-tree` without
   fzf. When testing the picker, pass the user's `FZF_DEFAULT_OPTS` to the test
   server: the Tokyo Night fzf theme sets `--layout=reverse`, which changes which
-  way Tab moves. `tokyonight_night.tmux` is a verbatim copy of the upstream
-  extra; refresh it from upstream rather than editing it.
+  way Tab moves. `agents-dashboard.sh` is the agent dashboard behind `prefix a`
+  (MacBook only in practice, because Claude Code isn't used on the workstation):
+  one fzf copy in the hidden session `_agents`, also linked into one visible
+  session, window 1 of "main" by default. `agents-snapshot.pl` prints its rows and is the only part that
+  knows where agent state comes from; it joins `tmux list-panes` to
+  `~/.claude/sessions/*.json` on the %pane id and must never open the `.key` files
+  there. `tokyonight_night.tmux` is a verbatim copy of the upstream extra; refresh
+  it from upstream rather than editing it.
 - `fish/config.fish`: env, PATH and aliases. `conf.d/tokyonight_night.fish`
   and `conf.d/tokyonight_night_fzf.fish` are verbatim upstream extras (the
   latter is `extras/fzf/tokyonight_night.sh`, whose `export` syntax fish also
@@ -159,7 +165,11 @@ Use a separate server (`tmux -L probe -f tmux/tmux.conf ...`) so the user's
 sessions are untouched. Prompts, choosers and popups need an attached client:
 attach one from a pty (e.g. Python's `pty.fork()` running `tmux -L probe
 attach`), then drive key bindings with `tmux -L probe send-keys -K -c CLIENT
-...`. Plain `send-keys` types into the pane and bypasses key bindings. `send-keys
--K` can block until a binding's popup closes (seen on 3.8), so for popups write
-the keys to the client's pty instead. Apply changes to the live server with
-`tmux source-file ~/.config/tmux/tmux.conf`.
+...`. Plain `send-keys` types into the pane and bypasses key bindings; use it for
+keys meant for the program, because `-K` garbles unbound keys such as `Down`
+(seen on 3.5a). `send-keys -K` can block until a binding's popup closes (seen on
+3.8), so for popups write the keys to the client's pty instead.
+`display-message -c CLIENT` without `-t` doesn't report that client's session; use
+`list-clients -F`. To test the agent dashboard with fixtures, point the test
+server's `CLAUDE_CONFIG_DIR` at a directory with a `sessions/` folder. Apply
+changes to the live server with `tmux source-file ~/.config/tmux/tmux.conf`.
