@@ -38,18 +38,31 @@ about anything missing or too old. Don't install system packages without asking.
 |---|---|---|---|---|
 | Neovim | 0.11 | 0.12 | 0.11.x | `nvim/` |
 | git | any | ✓ | ✓ | lazy.nvim bootstraps and installs plugins with it |
-| tmux | 3.5 | 3.5a | 3.6b | `tmux/` (`send-keys -K`, popups) |
+| tmux | 3.5 | 3.8 | 3.6b | `tmux/` (`send-keys -K`, popups) |
 | perl | 5 at `/usr/bin/perl` | ✓ | ✓ | `tmux/hop.pl` |
-| fish | 3.7 | 3.7 | 4.x | `fish/` |
-| fzf | 0.53 (`--highlight-line` in the theme; `fzf --fish` needs 0.48) | 0.55 | check | Ctrl-T / Ctrl-R / Alt-C in fish; skipped silently if missing, so a missing fzf won't show as an error |
-| Ghostty | 1.3 | 1.3.1 | not used | `ghostty/`; 1.3 is needed for the AppleScript used by the `sg` alias |
+| fish | 3.7 | 4.9 | 4.x | `fish/` |
+| fzf | 0.53 (`--highlight-line` in the theme; `fzf --fish` needs 0.48) | 0.74 | check | Ctrl-T / Ctrl-R / Alt-C in fish; skipped silently if missing, so a missing fzf won't show as an error |
+| Ghostty | 1.3 | 1.4 | not used | `ghostty/`; 1.3 is needed for the AppleScript used by the `sg` alias |
 | Hack Nerd Font Mono | | ✓ | not used | Ghostty `font-family` |
+| Claude Code | any | ✓ | check | the `c` alias, `claude/skills/` |
 
 On macOS, `brew bundle --file Brewfile` installs all of these; keep the
 Brewfile in sync with this table. Then run `./install.sh LOCAL_DIR` (see below)
-and open a new shell. On macOS, also run `gh auth login` and `gh auth
-setup-git` so git can push to GitHub over HTTPS. Update the version columns when a machine's versions
+and open a new shell. Update the version columns when a machine's versions
 change.
+
+A new Mac starts with only Homebrew and the Claude desktop app, which doesn't
+put `claude` on PATH. Besides the README's install commands:
+
+- Run `killall fontd` after `brew bundle`. Otherwise macOS may not list the new
+  font, and Ghostty silently falls back to JetBrains Mono. launchd restarts
+  fontd on demand.
+- Ask the user to run the README's last commands themselves: `gh auth login`
+  needs their browser, and adding fish to `/etc/shells` and `chsh` need their
+  password. Nothing else makes fish the shell, since Ghostty and tmux both start
+  the login shell. Run `gh auth setup-git` once they've logged in.
+- Ask the user to open Ghostty, approve the first launch, and allow Accessibility
+  access, which the `alt+space` global keybind needs.
 
 ## Per-machine config
 
@@ -98,7 +111,9 @@ file is absent, and add a row above.
 - `ghostty/config.ghostty`: Ghostty config (MacBook only). `themes/tokyonight_night`
   is a verbatim upstream extra. Validate with
   `/Applications/Ghostty.app/Contents/MacOS/ghostty +validate-config`; check the
-  effective config with `+show-config`.
+  effective config with `+show-config`. Validation doesn't catch a font name that
+  doesn't match: check with `+show-face --cp=0x41`, and take `font-family` from
+  an unindented family line in `+list-fonts`.
 - `claude/skills/`: Claude Code skills, each linked into `~/.claude/skills` on
   its own (that directory also holds skills Claude Code syncs from claude.ai).
   `organize-iphone` arranges the iPhone home screen over USB (MacBook only). Its
@@ -123,5 +138,7 @@ Use a separate server (`tmux -L probe -f tmux/tmux.conf ...`) so the user's
 sessions are untouched. Prompts, choosers and popups need an attached client:
 attach one from a pty (e.g. Python's `pty.fork()` running `tmux -L probe
 attach`), then drive key bindings with `tmux -L probe send-keys -K -c CLIENT
-...`. Plain `send-keys` types into the pane and bypasses key bindings. Apply
-changes to the live server with `tmux source-file ~/.config/tmux/tmux.conf`.
+...`. Plain `send-keys` types into the pane and bypasses key bindings. `send-keys
+-K` can block until a binding's popup closes (seen on 3.8), so for popups write
+the keys to the client's pty instead. Apply changes to the live server with
+`tmux source-file ~/.config/tmux/tmux.conf`.

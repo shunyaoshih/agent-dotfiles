@@ -6,20 +6,32 @@ Maintained by agents; see [AGENTS.md](AGENTS.md) for the conventions.
 
 ## Install
 
-Check the dependencies first; they're listed under "Setting up a machine" in
-[AGENTS.md](AGENTS.md).
+On a new Mac, install [Homebrew](https://brew.sh) and the Claude desktop app by
+hand, then ask Claude Code to set up this repo. Check the dependencies first;
+they're listed under "Setting up a machine" in [AGENTS.md](AGENTS.md).
 
 ```sh
 git clone https://github.com/shunyaoshih/agent-dotfiles.git ~/agent-dotfiles
 brew bundle --file ~/agent-dotfiles/Brewfile   # macOS only
+killall fontd                                  # macOS only: load the new font
 ~/agent-dotfiles/install.sh ~/local-dotfiles   # or omit the argument
 nvim --headless "+Lazy! restore" +qa           # plugins at the pinned versions
-gh auth login && gh auth setup-git             # macOS only: git over HTTPS
 ```
 
 `install.sh` symlinks `~/.config/{nvim,tmux,fish,ghostty,git}` and each skill
 in `~/.claude/skills` to this repo and backs up any real config it replaces.
-Then open a new shell and restart tmux.
+
+On macOS, finish with these yourself, since they need a browser login or your
+password:
+
+```sh
+gh auth login && gh auth setup-git             # git over HTTPS
+echo /opt/homebrew/bin/fish | sudo tee -a /etc/shells
+chsh -s /opt/homebrew/bin/fish                 # Ghostty and tmux use the login shell
+```
+
+Then open Ghostty and allow Accessibility access for the `alt+space` global
+keybind. Open a new shell and restart tmux.
 
 ## Per-machine overrides
 

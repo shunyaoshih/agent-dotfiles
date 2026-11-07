@@ -26,7 +26,7 @@ Run `$PY $LAYOUT status` (note the build for step 2). If it prints `NO_DEVICE`, 
 with a cable, unlock it, and tap Trust if asked. Wait for them; don't continue without it.
 (The user asked to be reminded about the cable whenever they forget.)
 
-If `$DATA/venv` is missing, rebuild it (Intel Mac; the newest `cryptography` has no x86_64 wheel):
+If `$DATA/venv` is missing, rebuild it (`--only-binary` because on an Intel Mac the newest `cryptography` has no x86_64 wheel; also works on Apple Silicon):
 `python3 -m venv /tmp/uvboot && /tmp/uvboot/bin/pip install -q uv && /tmp/uvboot/bin/uv venv -p 3.12 $DATA/venv && VIRTUAL_ENV=$DATA/venv /tmp/uvboot/bin/uv pip install --only-binary cryptography pymobiledevice3`.
 Don't use Homebrew for this; it builds cmake and uv from source and takes an hour.
 
