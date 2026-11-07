@@ -57,8 +57,7 @@ put `claude` on PATH. Besides the README's install commands:
   needs their browser, and adding fish to `/etc/shells` and `chsh` need their
   password. Nothing else makes fish the shell, since Ghostty and tmux both start
   the login shell. Run `gh auth setup-git` once they've logged in.
-- Ask the user to run `macos/defaults.sh`, which changes system settings, and to
-  reopen any open apps, since they keep showing the menu bar until then.
+- Ask the user to run `macos/defaults.sh`, which changes system settings.
 - Ask the user to open Ghostty, approve the first launch, and allow Accessibility
   access, which the `alt+space` global keybind needs.
 
@@ -95,7 +94,11 @@ file is absent, and add a row above.
   The user runs it; `install.sh` doesn't, so re-linking configs never changes
   system settings. To find a setting's key, diff `defaults read` from before and
   after the user changes it by hand. Settings that can't be scripted, such as
-  privacy permissions, go in the README's install steps.
+  privacy permissions, go in the README's install steps. The menu bar stays
+  visible because hiding it on a notched display frees no room for windows: macOS
+  still leaves the notch's strip out of `visibleFrame`, and a window manager can't
+  place windows there (AeroSpace with a negative gap didn't; Rectangle's source
+  says the same).
 - `git/config`: git config (MacBook only), linked as `~/.config/git`.
 - `nvim/init.lua`: the whole Neovim config. `nvim/lazy-lock.json` pins plugins.
 - `tmux/tmux.conf`: tmux config, linked as `~/.config/tmux`. `hop.pl` is a

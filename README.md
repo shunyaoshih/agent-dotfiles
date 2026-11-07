@@ -32,8 +32,7 @@ chsh -s /opt/homebrew/bin/fish                 # Ghostty and tmux use the login 
 
 Then run `~/agent-dotfiles/macos/defaults.sh` to apply the macOS settings, and
 open Ghostty and allow Accessibility access for the `alt+space` global keybind.
-Reopen any apps that were already open, since they keep showing the menu bar
-until then. Open a new shell and restart tmux.
+Open a new shell and restart tmux.
 
 ## Per-machine overrides
 

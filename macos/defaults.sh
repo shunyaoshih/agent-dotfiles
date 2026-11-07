@@ -9,12 +9,6 @@ set -eu
 defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock static-only -bool true
 
-# Hide the menu bar until the pointer reaches the top of the screen ("Always" in
-# System Settings, which saves both of these). Apps that are already open keep
-# showing it until they're reopened.
-defaults write NSGlobalDomain _HIHideMenuBar -bool true
-defaults write com.apple.controlcenter AutoHideMenuBarOption -int 0
-
 # Keep the wallpaper clean: no widgets, files or drives on it. Files stay in
 # ~/Desktop, where Finder still shows them.
 defaults write com.apple.WindowManager StandardHideWidgets -bool true
