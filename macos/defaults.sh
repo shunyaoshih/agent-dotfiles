@@ -37,3 +37,8 @@ done
 
 # Restart what reads these settings.
 killall Dock Finder WindowManager
+
+# On the power adapter, never sleep on its own, so long jobs keep running. The
+# screen still turns off and locks, closing the lid still sleeps, and battery is
+# unchanged. Last, because pmset needs root and asks for a password.
+sudo pmset -c sleep 0

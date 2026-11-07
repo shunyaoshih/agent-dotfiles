@@ -98,8 +98,8 @@ file is absent, and add a row above.
 - `Brewfile`: macOS dependencies for `brew bundle`.
 - `macos/defaults.sh`: macOS system settings that differ from the defaults
   (MacBook only, so there is no `local.*` file), one commented setting at a time.
-  The user runs it; `install.sh` doesn't, so re-linking configs never changes
-  system settings. To find a setting's key, diff `defaults read` from before and
+  The user runs it, since it asks for their password for `pmset`; `install.sh`
+  doesn't, so re-linking configs never changes system settings. To find a setting's key, diff `defaults read` from before and
   after the user changes it by hand. Settings that can't be scripted, such as
   privacy permissions, go in the README's install steps. The menu bar stays
   visible because hiding it on a notched display frees only about 5 points for
