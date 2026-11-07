@@ -69,7 +69,7 @@ In AeroSpace, each main app has its own workspace:
 
 | Keys | Does |
 |---|---|
-| `ctrl+alt+a`, `c`, `g`, `m` | Jump to Claude, Chrome, Ghostty, or messaging (LINE and Telegram), opening them if needed |
+| `ctrl+alt+c`, `g`, `m`, `t` | Jump to Claude, Chrome, messaging (LINE and Telegram), or Ghostty, opening them if needed |
 | `ctrl+alt+shift+` the same letter | Send the current window to that workspace, where it splits the screen |
 | `ctrl+alt+left`, `right` | Switch between windows on a workspace |
 | `ctrl+alt+shift+left`, `right` | Swap their sides |
