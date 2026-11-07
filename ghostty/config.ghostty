@@ -6,6 +6,10 @@
 theme = tokyonight_night
 # No font-family: Ghostty's default is its built-in JetBrains Mono.
 font-size = 21
+# Keep text clear of the rounded corners of the window and the MacBook's screen,
+# which otherwise clip both ends of tmux's status line.
+window-padding-x = 8
+window-padding-y = 8
 
 copy-on-select = clipboard
 # Option sends Alt, for fish's Alt bindings (e.g. Alt-C from fzf, Alt-E).
