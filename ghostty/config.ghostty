@@ -10,6 +10,9 @@ font-size = 21
 # which otherwise clip both ends of tmux's status line.
 window-padding-x = 8
 window-padding-y = 8
+# Split the space left over from whole cells evenly, instead of adding it all to
+# the right and bottom.
+window-padding-balance = true
 # Keep dim text readable on the dark background.
 faint-opacity = 0.7
 
