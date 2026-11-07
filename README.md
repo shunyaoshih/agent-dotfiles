@@ -13,7 +13,6 @@ they're listed under "Setting up a machine" in [AGENTS.md](AGENTS.md).
 ```sh
 git clone https://github.com/shunyaoshih/agent-dotfiles.git ~/agent-dotfiles
 brew bundle --file ~/agent-dotfiles/Brewfile   # macOS only
-killall fontd                                  # macOS only: load the new font
 ~/agent-dotfiles/install.sh ~/local-dotfiles   # or omit the argument
 nvim --headless "+Lazy! restore" +qa           # plugins at the pinned versions
 ```

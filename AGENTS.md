@@ -43,7 +43,6 @@ about anything missing or too old. Don't install system packages without asking.
 | fish | 3.7 | 4.9 | 4.x | `fish/` |
 | fzf | 0.53 (`--highlight-line` in the theme; `fzf --fish` needs 0.48) | 0.74 | check | Ctrl-T / Ctrl-R / Alt-C in fish; skipped silently if missing, so a missing fzf won't show as an error |
 | Ghostty | 1.3 | 1.4 | not used | `ghostty/`; 1.3 is needed for the AppleScript used by the `sg` alias |
-| Hack Nerd Font Mono | | ✓ | not used | Ghostty `font-family` |
 | Claude Code | any | ✓ | check | the `c` alias, `claude/skills/` |
 
 On macOS, `brew bundle --file Brewfile` installs all of these; keep the
@@ -54,9 +53,6 @@ change.
 A new Mac starts with only Homebrew and the Claude desktop app, which doesn't
 put `claude` on PATH. Besides the README's install commands:
 
-- Run `killall fontd` after `brew bundle`. Otherwise macOS may not list the new
-  font, and Ghostty silently falls back to JetBrains Mono. launchd restarts
-  fontd on demand.
 - Ask the user to run the README's last commands themselves: `gh auth login`
   needs their browser, and adding fish to `/etc/shells` and `chsh` need their
   password. Nothing else makes fish the shell, since Ghostty and tmux both start
@@ -112,9 +108,7 @@ file is absent, and add a row above.
 - `ghostty/config.ghostty`: Ghostty config (MacBook only). `themes/tokyonight_night`
   is a verbatim upstream extra. Validate with
   `/Applications/Ghostty.app/Contents/MacOS/ghostty +validate-config`; check the
-  effective config with `+show-config`. Validation doesn't catch a font name that
-  doesn't match: check with `+show-face --cp=0x41`, and take `font-family` from
-  an unindented family line in `+list-fonts`.
+  effective config with `+show-config`.
 - `claude/skills/`: Claude Code skills, each linked into `~/.claude/skills` on
   its own (that directory also holds skills Claude Code syncs from claude.ai).
   `organize-iphone` arranges the iPhone home screen over USB (MacBook only). Its

@@ -10,4 +10,3 @@ brew "tmux"
 
 cask "claude-code" # the `claude` CLI; the desktop app doesn't put one on PATH
 cask "ghostty"
-cask "font-hack-nerd-font"
