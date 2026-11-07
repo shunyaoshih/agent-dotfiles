@@ -33,8 +33,8 @@ chsh -s /opt/homebrew/bin/fish                 # Ghostty and tmux use the login 
 Then run `~/agent-dotfiles/macos/defaults.sh` to apply the macOS settings, and
 open Ghostty and AeroSpace and allow Accessibility access for each: Ghostty's
 `alt+space` global keybind needs it, and AeroSpace can't manage windows without it.
-Install LINE from the App Store, since it isn't on Homebrew. Open a new shell and
-restart tmux.
+Install LINE from the App Store, since it isn't on Homebrew. Log out and back in,
+so the script's input source shortcuts (`ctrl+space`) take effect.
 
 ## Per-machine overrides
 
