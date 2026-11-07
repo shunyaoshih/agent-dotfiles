@@ -1,7 +1,8 @@
 # agent-dotfiles
 
-Minimal configs for Ghostty, tmux, fish, and Neovim, plus Claude Code skills,
-built for working mostly through AI agents. All in the Tokyo Night theme.
+Minimal configs for Ghostty, tmux, fish, and Neovim, plus macOS settings and
+Claude Code skills, built for working mostly through AI agents. All in the Tokyo
+Night theme.
 Maintained by agents; see [AGENTS.md](AGENTS.md) for the conventions.
 
 ## Install
@@ -29,8 +30,10 @@ echo /opt/homebrew/bin/fish | sudo tee -a /etc/shells
 chsh -s /opt/homebrew/bin/fish                 # Ghostty and tmux use the login shell
 ```
 
-Then open Ghostty and allow Accessibility access for the `alt+space` global
-keybind. Open a new shell and restart tmux.
+Then run `~/agent-dotfiles/macos/defaults.sh` to apply the macOS settings, and
+open Ghostty and allow Accessibility access for the `alt+space` global keybind.
+Reopen any apps that were already open, since they keep showing the menu bar
+until then. Open a new shell and restart tmux.
 
 ## Per-machine overrides
 
