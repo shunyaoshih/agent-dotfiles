@@ -4,6 +4,9 @@
 
 set -g fish_greeting
 set -gx EDITOR nvim
+# Homebrew on Apple Silicon, ahead of /usr/bin (-m: /etc/paths.d may have already
+# added it, last). Directories that don't exist, as on Linux, are skipped.
+fish_add_path -gm /opt/homebrew/bin /opt/homebrew/sbin
 fish_add_path -g ~/.local/bin
 
 # fzf key bindings: Ctrl-T inserts a file path, Ctrl-R searches history, Alt-C
