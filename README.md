@@ -30,12 +30,19 @@ echo /opt/homebrew/bin/fish | sudo tee -a /etc/shells
 chsh -s /opt/homebrew/bin/fish                 # Ghostty and tmux use the login shell
 ```
 
-Then run `~/agent-dotfiles/macos/defaults.sh` to apply the macOS settings (it asks
-for your password for the power setting), and open Ghostty and AeroSpace and
-allow Accessibility access for each: Ghostty's
-`alt+space` global keybind needs it, and AeroSpace can't manage windows without it.
-Install LINE from the App Store, since it isn't on Homebrew. Log out and back in,
-so the script's input source shortcuts (`ctrl+space`) take effect.
+Then:
+
+1. Run `~/agent-dotfiles/macos/defaults.sh` to apply the macOS settings. It asks
+   for your password for the power setting.
+2. Open Ghostty and AeroSpace and allow Accessibility access for each: Ghostty's
+   `alt+space` global keybind needs it, and AeroSpace can't manage windows
+   without it.
+3. Install LINE from the App Store, since it isn't on Homebrew.
+4. Remove the desktop widgets a new Mac comes with: reveal the desktop,
+   right-click each widget, and choose Remove Widget. The script only hides
+   widgets while windows are open.
+5. Log out and back in, so the input source shortcuts (`ctrl+space`) take
+   effect.
 
 ## Per-machine overrides
 

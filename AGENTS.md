@@ -66,6 +66,9 @@ put `claude` on PATH. Besides the README's install commands:
   can't manage windows. Then check its config with `aerospace reload-config
   --dry-run --no-gui`, which only works while it's running.
 - Ask the user to install LINE from the App Store, since it isn't on Homebrew.
+- Ask the user to remove the default desktop widgets by hand. `defaults.sh` hides
+  widgets while windows are open, but revealing the desktop still shows them,
+  and their storage isn't a stable file to script.
 
 ## Per-machine config
 
