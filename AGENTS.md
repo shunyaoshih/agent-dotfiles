@@ -81,7 +81,10 @@ put `claude` on PATH. Besides the README's install commands:
   Xcode is installed, ask the user to run `sudo xcode-select -s
   /Applications/Xcode.app` (the command line tools stay the developer directory
   otherwise, and `xcodebuild` needs Xcode), then open Xcode once to accept its
-  license and install its components.
+  license and install its components. The iOS simulator is a separate download
+  of several GB: with the user's OK, run `xcodebuild -downloadPlatform iOS`
+  (no password needed), or they can click Get under Xcode's Settings ›
+  Components. Check it with `xcrun simctl list runtimes`.
 - Ask the user to remove the default desktop widgets by hand. `defaults.sh` hides
   widgets while windows are open, but revealing the desktop still shows them,
   and their storage isn't a stable file to script.
