@@ -1,6 +1,7 @@
 # macOS dependencies (see "Setting up a machine" in AGENTS.md).
 # Install with: brew bundle --file ~/agent-dotfiles/Brewfile
 
+tap "hamed-elfayome/claude-usage" # Claude Usage Tracker isn't in Homebrew's own casks
 tap "nikitabobko/tap" # AeroSpace isn't in Homebrew's own casks
 
 brew "fish"
@@ -14,6 +15,7 @@ brew "tmux"
 cask "1password" # fills logins in native apps too (Universal Autofill)
 cask "claude-code" # the `claude` CLI; the desktop app doesn't put one on PATH
 cask "ghostty"
+cask "hamed-elfayome/claude-usage/claude-usage-tracker" # Claude usage limits in the menu bar
 cask "google-chrome"
 cask "google-drive" # Drive as a Finder folder
 cask "nikitabobko/tap/aerospace"

@@ -47,6 +47,7 @@ about anything missing or too old. Don't install system packages without asking.
 | Chrome, Telegram, LINE | any | ✓ | not used | their AeroSpace workspaces; LINE comes from the App Store by `mas` |
 | 1Password | any | ✓ | not used | passwords; Universal Autofill fills logins outside the browser |
 | Claude Code | any | ✓ | check | the `c` alias, `claude/skills/` |
+| Claude Usage Tracker | any | 3.3.0 | not used | Claude usage limits in the menu bar; comes from the developer's own Homebrew tap |
 | Xcode | any | 27.2 | not used | iOS development; installed from the App Store by `mas` |
 
 On macOS, `brew bundle --file Brewfile` installs all of these; keep the
@@ -70,6 +71,9 @@ put `claude` on PATH. Besides the README's install commands:
 - Ask the user to open 1Password and sign in. For filling logins outside the
   browser, have them turn on Universal Autofill (Settings → Autofill) and allow
   the Accessibility access it asks for.
+- Ask the user to open Claude Usage (Claude Usage Tracker) and sign in with
+  their Claude Code login. Leave its statusline and Dynamic Island features off:
+  they write `~/.claude/settings.json`.
 - The `google-drive` cask runs a pkg installer that needs sudo, so `brew bundle`
   fails on it without a terminal; ask the user to run `brew install --cask
   google-drive` in their own terminal (Claude Code's `!` has no terminal
