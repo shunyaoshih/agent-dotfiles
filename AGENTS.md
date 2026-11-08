@@ -41,7 +41,7 @@ about anything missing or too old. Don't install system packages without asking.
 | tmux | 3.5 | 3.8 | 3.6b | `tmux/` (`send-keys -K`, popups) |
 | perl | 5 at `/usr/bin/perl` | ✓ | ✓ | `tmux/hop.pl`; `tmux/agents-snapshot.pl` (MacBook only, needs core JSON::PP) |
 | fish | 3.7 | 4.9 | 4.x | `fish/` |
-| fzf | 0.53 (`--highlight-line` in the theme; `fzf --fish` needs 0.48; the agent dashboard's `--footer` needs 0.63) | 0.74 | check | Ctrl-T / Ctrl-R / Alt-C in fish and the tmux agent dashboard; skipped silently if missing, so a missing fzf won't show as an error |
+| fzf | 0.53 (`--highlight-line` in the theme; `fzf --fish` needs 0.48; the agent dashboard's `--footer` needs 0.63) | 0.75 | check | Ctrl-T / Ctrl-R / Alt-C in fish and the tmux agent dashboard; skipped silently if missing, so a missing fzf won't show as an error |
 | Ghostty | 1.3 | 1.4 | not used | `ghostty/`; 1.3 is needed for the AppleScript used by the `sg` alias |
 | AeroSpace | 0.21 | 0.21 | not used | `aerospace/`; comes from the developer's own Homebrew tap |
 | Chrome, Telegram, LINE | any | ✓ | not used | their AeroSpace workspaces; LINE comes from the App Store by `mas` |
