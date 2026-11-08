@@ -45,6 +45,7 @@ about anything missing or too old. Don't install system packages without asking.
 | Ghostty | 1.3 | 1.4 | not used | `ghostty/`; 1.3 is needed for the AppleScript used by the `sg` alias |
 | AeroSpace | 0.21 | 0.21 | not used | `aerospace/`; comes from the developer's own Homebrew tap |
 | Chrome, Telegram, LINE | any | ✓ | not used | their AeroSpace workspaces; LINE comes from the App Store by `mas` |
+| Discord, Steam | any | ✓ | not used | Discord's AeroSpace workspace; games |
 | 1Password | any | ✓ | not used | passwords; Universal Autofill fills logins outside the browser |
 | Claude Code | any | ✓ | check | the `c` alias, `claude/skills/` |
 | Claude Usage Tracker | any | 3.3.0 | not used | Claude usage limits in the menu bar; comes from the developer's own Homebrew tap |

@@ -14,11 +14,13 @@ brew "tmux"
 
 cask "1password" # fills logins in native apps too (Universal Autofill)
 cask "claude-code" # the `claude` CLI; the desktop app doesn't put one on PATH
+cask "discord"
 cask "ghostty"
 cask "hamed-elfayome/claude-usage/claude-usage-tracker" # Claude usage limits in the menu bar
 cask "google-chrome"
 cask "google-drive" # Drive as a Finder folder
 cask "nikitabobko/tap/aerospace"
+cask "steam"
 cask "telegram"
 
 mas "LINE", id: 539883307
