@@ -16,6 +16,7 @@ brew "tmux"
 brew "zstd" # Arm's compiler for the keyboard firmware needs it
 
 cask "1password" # fills logins in native apps too (Universal Autofill)
+cask "1password-cli" # `op`, for reading items from scripts
 cask "claude-code" # the `claude` CLI; the desktop app doesn't put one on PATH
 cask "discord"
 cask "ghostty"
