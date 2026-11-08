@@ -45,6 +45,7 @@ about anything missing or too old. Don't install system packages without asking.
 | Ghostty | 1.3 | 1.4 | not used | `ghostty/`; 1.3 is needed for the AppleScript used by the `sg` alias |
 | AeroSpace | 0.21 | 0.21 | not used | `aerospace/`; comes from the developer's own Homebrew tap |
 | Chrome, Telegram, LINE | any | ✓ | not used | their AeroSpace workspaces; LINE comes from the App Store by `mas` |
+| 1Password | any | ✓ | not used | passwords; Universal Autofill fills logins outside the browser |
 | Claude Code | any | ✓ | check | the `c` alias, `claude/skills/` |
 | Xcode | any | 27.2 | not used | iOS development; installed from the App Store by `mas` |
 
@@ -66,6 +67,9 @@ put `claude` on PATH. Besides the README's install commands:
 - Ask the user to open AeroSpace and allow Accessibility access, without which it
   can't manage windows. Then check its config with `aerospace reload-config
   --dry-run --no-gui`, which only works while it's running.
+- Ask the user to open 1Password and sign in. For filling logins outside the
+  browser, have them turn on Universal Autofill (Settings → Autofill) and allow
+  the Accessibility access it asks for.
 - The `google-drive` cask runs a pkg installer that needs sudo, so `brew bundle`
   fails on it without a terminal; ask the user to run `brew install --cask
   google-drive` in their own terminal (Claude Code's `!` has no terminal

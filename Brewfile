@@ -11,6 +11,7 @@ brew "mas" # installs the App Store apps below; it can't sign in, so do that fir
 brew "neovim"
 brew "tmux"
 
+cask "1password" # fills logins in native apps too (Universal Autofill)
 cask "claude-code" # the `claude` CLI; the desktop app doesn't put one on PATH
 cask "ghostty"
 cask "google-chrome"
