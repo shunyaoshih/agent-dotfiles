@@ -65,6 +65,12 @@ put `claude` on PATH. Besides the README's install commands:
 - Ask the user to open AeroSpace and allow Accessibility access, without which it
   can't manage windows. Then check its config with `aerospace reload-config
   --dry-run --no-gui`, which only works while it's running.
+- The `google-drive` cask runs a pkg installer that needs sudo, so `brew bundle`
+  fails on it without a terminal; ask the user to run `brew install --cask
+  google-drive` in their own terminal (Claude Code's `!` has no terminal
+  either). Then ask them to open Google Drive, sign in, and approve its system
+  extension and File Provider access, without which Drive doesn't mount in
+  Finder.
 - Ask the user to install LINE from the App Store, since it isn't on Homebrew.
 - Ask the user to remove the default desktop widgets by hand. `defaults.sh` hides
   widgets while windows are open, but revealing the desktop still shows them,

@@ -13,5 +13,6 @@ brew "tmux"
 cask "claude-code" # the `claude` CLI; the desktop app doesn't put one on PATH
 cask "ghostty"
 cask "google-chrome"
+cask "google-drive" # Drive as a Finder folder
 cask "nikitabobko/tap/aerospace"
 cask "telegram"
