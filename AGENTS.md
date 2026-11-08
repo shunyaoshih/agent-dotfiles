@@ -127,8 +127,8 @@ file is absent, and add a row above.
 
 ## Layout
 
-- `install.sh`: symlinks configs into `~/.config`, skills into
-  `~/.claude/skills`, and links local files.
+- `install.sh`: symlinks configs into `~/.config`, `claude/CLAUDE.md` and
+  skills into `~/.claude`, and links local files.
 - `Brewfile`: macOS dependencies for `brew bundle`.
 - `macos/defaults.sh`: macOS system settings that differ from the defaults
   (MacBook only, so there is no `local.*` file), one commented setting at a time.
@@ -188,6 +188,8 @@ file is absent, and add a row above.
   float, through a catch-all rule that needs an explicit `if = 'true'`. Apply
   changes with `aerospace reload-config`. Test a binding without pressing keys
   using `aerospace trigger-binding --mode main KEYS`.
+- `claude/CLAUDE.md`: the user's global Claude Code instructions, linked as
+  `~/.claude/CLAUDE.md`.
 - `claude/skills/`: Claude Code skills, each linked into `~/.claude/skills` on
   its own (that directory also holds skills Claude Code syncs from claude.ai).
   `organize-iphone` arranges the iPhone home screen over USB (MacBook only). Its

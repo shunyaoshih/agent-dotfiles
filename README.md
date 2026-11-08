@@ -19,8 +19,9 @@ brew bundle --file ~/agent-dotfiles/Brewfile   # macOS only
 nvim --headless "+Lazy! restore" +qa           # plugins at the pinned versions
 ```
 
-`install.sh` symlinks `~/.config/{nvim,tmux,fish,ghostty,aerospace,git}` and each
-skill in `~/.claude/skills` to this repo and backs up any real config it replaces.
+`install.sh` symlinks `~/.config/{nvim,tmux,fish,ghostty,aerospace,git}`,
+`~/.claude/CLAUDE.md` and each skill in `~/.claude/skills` to this repo and backs
+up any real config it replaces.
 
 On macOS, finish with these yourself, since they need a browser login or your
 password:
