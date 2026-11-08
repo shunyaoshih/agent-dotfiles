@@ -72,8 +72,10 @@ put `claude` on PATH. Besides the README's install commands:
   browser, have them turn on Universal Autofill (Settings → Autofill) and allow
   the Accessibility access it asks for.
 - Ask the user to open Claude Usage (Claude Usage Tracker) and sign in with
-  their Claude Code login. Leave its statusline and Dynamic Island features off:
-  they write `~/.claude/settings.json`.
+  their Claude Code login, then set its popover shortcut to `ctrl+alt+u` by hand
+  (Settings › Shortcuts; it's stored as encoded data, so it isn't scripted).
+  Leave its statusline and Dynamic Island features off: they write
+  `~/.claude/settings.json`.
 - The `google-drive` cask runs a pkg installer that needs sudo, so `brew bundle`
   fails on it without a terminal; ask the user to run `brew install --cask
   google-drive` in their own terminal (Claude Code's `!` has no terminal
