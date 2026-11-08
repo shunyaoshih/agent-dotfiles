@@ -76,7 +76,12 @@ put `claude` on PATH. Besides the README's install commands:
   their Claude Code login, then set its popover shortcut to `ctrl+alt+u` by hand
   (Settings › Shortcuts; it's stored as encoded data, so it isn't scripted).
   Leave its statusline and Dynamic Island features off: they write
-  `~/.claude/settings.json`.
+  `~/.claude/settings.json`. Have them turn on its launch at login setting too,
+  which the app keeps to itself rather than in a preference.
+- Merge `"editorMode": "vim"`, `"autoCompactEnabled": false` and `"theme":
+  "dark"` into `~/.claude/settings.json`, then ask the user to run `/effort
+  high` in Claude Code, which saves the effort for the current model. The file
+  isn't tracked or linked because Claude Code rewrites it.
 - The `google-drive` cask runs a pkg installer that needs sudo, so `brew bundle`
   fails on it without a terminal; ask the user to run `brew install --cask
   google-drive` in their own terminal (Claude Code's `!` has no terminal

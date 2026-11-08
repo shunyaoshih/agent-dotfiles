@@ -50,6 +50,30 @@ for hotkey in "60 262144" "61 786432"; do
 		"<dict><key>enabled</key><true/><key>value</key><dict><key>parameters</key><array><integer>32</integer><integer>49</integer><integer>$2</integer></array><key>type</key><string>standard</string></dict></dict>"
 done
 
+# Dark mode, and Traditional Chinese as the second language. These take effect
+# at the next login.
+defaults write -g AppleInterfaceStyle -string Dark
+defaults write -g AppleLanguages -array en-US zh-Hant-US
+
+# No gaps between tiled windows.
+defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
+
+# Open Finder windows in list view.
+defaults write com.apple.finder FXPreferredViewStyle -string Nlsv
+
+# Chrome as the default browser, which macOS asks to confirm unless it already
+# is. Setting http changes https and HTML files with it.
+swift - <<'EOF'
+import AppKit
+let done = DispatchSemaphore(value: 0)
+let chrome = URL(fileURLWithPath: "/Applications/Google Chrome.app")
+NSWorkspace.shared.setDefaultApplication(at: chrome, toOpenURLsWithScheme: "http") { error in
+	if let error { print(error) }
+	done.signal()
+}
+done.wait()
+EOF
+
 # Restart what reads these settings.
 killall Dock Finder WindowManager
 

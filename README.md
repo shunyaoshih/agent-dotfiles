@@ -35,7 +35,8 @@ sudo xcode-select -s /Applications/Xcode.app   # xcodebuild needs Xcode, not the
 Then:
 
 1. Run `~/agent-dotfiles/macos/defaults.sh` to apply the macOS settings. It asks
-   for your password for the power setting.
+   for your password for the power setting and to confirm Chrome as the default
+   browser.
 2. Open Ghostty and AeroSpace and allow Accessibility access for each: Ghostty's
    `alt+space` global keybind needs it, and AeroSpace can't manage windows
    without it.
@@ -44,8 +45,8 @@ Then:
 4. Remove the desktop widgets a new Mac comes with: reveal the desktop,
    right-click each widget, and choose Remove Widget. The script only hides
    widgets while windows are open.
-5. Log out and back in, so the input source shortcuts (`ctrl+space`) take
-   effect.
+5. Log out and back in, so dark mode, the second language and the input source
+   shortcuts (`ctrl+space`) take effect.
 
 ## Per-machine overrides
 
