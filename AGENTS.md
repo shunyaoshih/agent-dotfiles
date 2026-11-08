@@ -107,6 +107,12 @@ put `claude` on PATH. Besides the README's install commands:
 - For the keyboard firmware, ask the user whether to set it up, then clone their
   private keymap repo and follow its README. This repo is public, so keep that
   repo's name and contents out of it.
+- For the Chrome new tab page, clone
+  `https://github.com/shunyaoshih/new-tab.git` to `~/projects/new-tab`. Then ask
+  the user to open `chrome://extensions`, turn on Developer mode, click Load
+  unpacked and pick that folder. Chrome Sync doesn't install unpacked extensions,
+  so every Mac needs this. If Sync brings back BNTP, have them turn it off so the
+  two don't compete for the new tab.
 
 ## Per-machine config
 
