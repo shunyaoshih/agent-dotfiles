@@ -13,11 +13,18 @@
 # the header says why. Replies go only to agents between turns: a working agent
 # can open a permission prompt at any moment, and a reply's Enter would answer it.
 #
+# The preview follows the end of the selected agent's conversation. To read back,
+# Ctrl-U and Ctrl-D scroll it half a page, and [ and ] jump to the previous and
+# next prompt you wrote, as in copy mode. Going past the end, or to another row,
+# follows the end again.
+#
 # Usage: agents-dashboard.sh open CLIENT PANE_ID SESSION_ID   go to it (prefix a)
 #        agents-dashboard.sh view                             fzf, in the _agents pane
 #        agents-dashboard.sh cursor                           fzf's load handler
 #        agents-dashboard.sh key KEY [PANE_ID]                fzf's enter, esc, reply
 #                                                             and approve handler
+#        agents-dashboard.sh scroll KEY PANE_ID               fzf's preview scrolling
+#                                                             handler
 #        agents-dashboard.sh header|label|preview PANE_ID     what fzf shows
 #        agents-dashboard.sh keep                             tmux's window-unlinked hook
 #        agents-dashboard.sh status                           blocked and done counts
@@ -37,7 +44,15 @@ self=$HOME/.config/tmux/agents-dashboard.sh
 snapshot=$HOME/.config/tmux/agents-snapshot.pl
 tab=$(printf '\t')
 preview="\"$self\" preview {1}"
-preview_window='right,42%,wrap,follow'
+# Below the list and as wide as the window, like the agents' own panes, so
+# their lines fit without wrapping. Claude Code fills every column, so the
+# preview has only a top border, and fzf runs with --no-scrollbar.
+preview_window='down,70%,wrap,follow,noinfo,border-top'
+label="transform-preview-label(printf ' %s · %s ' {3} {2})"
+dim=$(printf '\033[38;2;115;122;162m') off=$(printf '\033[0m')
+keys="${dim}enter go · esc back · . jump · ctrl-u/d scroll · [ ] prompts · ctrl-r reply · ctrl-o approve${off}"
+# Keys for the list only, unbound while you type a reply or an approval.
+list_keys='f11,f12,focus,.,ctrl-u,ctrl-d,[,]'
 reload="\"$snapshot\" | tee \"\$AGENTS_DIR/shown\""
 
 # Send the client viewing the dashboard to pane $1. It's the most recently active
@@ -107,12 +122,13 @@ check() {
 start() {
 	printf %s "$FZF_QUERY" >"$AGENTS_DIR/query"
 	echo "$1" >"$AGENTS_DIR/mode"
-	printf 'unbind(f11,f12,focus,.)+disable-search+clear-query+change-prompt(%s)' "$2"
+	rm -f "$AGENTS_DIR/scroll"
+	printf 'unbind(%s)+disable-search+clear-query+change-prompt(%s)+change-footer(%s)' "$list_keys" "$2" "$3"
 	printf '+transform-header("%s" header)+transform-preview-label("%s" label)' "$self" "$self"
 	if [ "$1" = reply ]; then
 		printf '+change-preview("%s" preview %s)\n' "$self" "$pane"
 	else
-		printf '+change-preview(tail -n +2 "$AGENTS_DIR/prompt")+change-preview-window(right,60%%,wrap)\n'
+		printf '+change-preview(tail -n +2 "$AGENTS_DIR/prompt")+change-preview-window(down,70%%,wrap,noinfo,border-top)\n'
 	fi
 }
 
@@ -120,7 +136,7 @@ start() {
 leave() {
 	rm -f "$AGENTS_DIR/mode"
 	cut -f 1 "$AGENTS_DIR/target" >"$AGENTS_DIR/cursor"
-	echo "rebind(f11,f12,focus,.)+change-prompt(agents> )+transform-query(cat \"\$AGENTS_DIR/query\")+enable-search+change-preview($preview)+change-preview-window($preview_window)+reload-sync($reload)"
+	echo "rebind($list_keys)+change-prompt(agents> )+change-footer($keys)+transform-query(cat \"\$AGENTS_DIR/query\")+enable-search+change-preview($preview)+change-preview-window($preview_window)+reload-sync($reload)"
 	exit 0
 }
 
@@ -170,7 +186,7 @@ view)
 		rm -f "$AGENTS_DIR/mode" "$AGENTS_DIR/message"
 		row=$("$snapshot" | tee "$AGENTS_DIR/shown" | fzf \
 			--no-sort --delimiter="$tab" --with-nth=6 --prompt='agents> ' \
-			--header-first \
+			--header-first --no-separator --no-scrollbar --footer="$keys" \
 			--preview "$preview" \
 			--preview-window="$preview_window" \
 			--jump-labels "ntesaroibwfmuc,l'yzkhd\"gjxqpv" \
@@ -181,8 +197,12 @@ view)
 			--bind '.:execute-silent(touch "$AGENTS_DIR/pause")+jump-accept' \
 			--bind "f12:execute-silent(printf %s {1} >\"\$AGENTS_DIR/cursor\")+reload-sync($reload)" \
 			--bind "load:transform(\"$self\" cursor)" \
-			--bind 'f11:refresh-preview+transform-preview-label(echo {3})' \
-			--bind 'focus:transform-preview-label(echo {3})')
+			--bind "f11:refresh-preview+$label" \
+			--bind "ctrl-u:transform(\"$self\" scroll up {1})" \
+			--bind "ctrl-d:transform(\"$self\" scroll down {1})" \
+			--bind "[:transform(\"$self\" scroll previous {1})" \
+			--bind "]:transform(\"$self\" scroll next {1})" \
+			--bind "focus:$label+transform(\"$self\" scroll row {1})")
 		case $? in
 		0)
 			pane=${row%%"$tab"*}
@@ -196,6 +216,49 @@ view)
 		*) sleep 1 ;;
 		esac
 	done
+	;;
+scroll)
+	# fzf doesn't say how far the preview is scrolled, so while you read, the line
+	# at its top is kept in the file scroll, as PANE_ID LINE. No file, or another
+	# pane's, means the preview is following the end.
+	read -r pane top 2>/dev/null <"$AGENTS_DIR/scroll"
+	[ "$pane" = "$3" ] || top=
+	if [ "$2" = row ]; then
+		[ -n "$pane" ] && [ -z "$top" ] || exit 0
+		top=end
+	else
+		# Copy mode starts at the end, so [ finds the last prompt even if it's on
+		# screen. Half a page, like copy mode's Ctrl-U and Ctrl-D.
+		top=$("$snapshot" prompts "$3" 2>/dev/null | awk -v key="$2" -v top="$top" -v height="$FZF_PREVIEW_LINES" '
+			NR == 1 {
+				end = $1 - height + 1
+				if (end < 1) end = 1
+				from = top == "" ? $1 + 1 : top
+				if (top == "") top = end
+				next
+			}
+			$1 < from { before = $1 }
+			$1 > top && after == "" { after = $1 }
+			END {
+				if (NR == 0) exit
+				if (key == "up") top -= int(height / 2)
+				else if (key == "down") top += int(height / 2)
+				else if (key == "previous") top = before == "" ? 1 : before
+				else top = after == "" ? end : after
+				print (top < 1 ? 1 : top >= end ? "end" : top)
+			}')
+	fi
+	case $top in
+	'') ;;
+	end)
+		rm -f "$AGENTS_DIR/scroll"
+		echo "change-preview-window($preview_window)+preview-bottom"
+		;;
+	*)
+		echo "$3 $top" >"$AGENTS_DIR/scroll"
+		echo "change-preview-window(nofollow,+$top)"
+		;;
+	esac
 	;;
 cursor)
 	# Rows as fzf has them: filtered by the query, in input order (--no-sort).
@@ -232,11 +295,11 @@ key)
 		[ -z "$reason" ] || say no "$reason"
 		if [ "$2" = reply ]; then
 			reason=$("$snapshot" input "$pane" 2>/dev/null) || say no "$location $reason"
-			start reply 'reply> '
+			start reply 'reply> ' "${dim}enter send · esc cancel${off}"
 		else
 			"$snapshot" approval "$pane" >"$AGENTS_DIR/prompt" 2>/dev/null ||
 				say no "$location $(cat "$AGENTS_DIR/prompt")"
-			start approve 'type y to approve> '
+			start approve 'type y to approve> ' "${dim}y, then enter, approves · esc cancel${off}"
 		fi
 		;;
 	reply:esc | approve:esc)
@@ -283,25 +346,30 @@ key)
 header)
 	mode=$(cat "$AGENTS_DIR/mode" 2>/dev/null)
 	IFS=$tab read -r pane state location agent title _ <"$AGENTS_DIR/target" 2>/dev/null
-	dim='\033[38;2;115;122;162m' bold='\033[1;38;2;192;202;245m' off='\033[0m'
+	bold='\033[1;38;2;192;202;245m'
 	case $mode in
 	reply)
 		printf "${bold}Reply to %s${off}  %s  ($state)\n" "$location" "$title"
-		printf "${dim}enter send · esc cancel${off}\n"
 		;;
 	approve)
 		IFS=$tab read -r key choice <"$AGENTS_DIR/prompt"
 		printf "${bold}Approve for %s?${off}  %s\n" "$location" "$title"
-		printf "${dim}y, then enter, sends %s for \"%s\" · esc cancel${off}\n" "$key" "$choice"
+		printf "${dim}sends %s, for \"%s\"${off}\n" "$key" "$choice"
 		;;
 	*)
+		# Only the states some agent is in, in the rows' order.
 		awk -F '\t' '
 			{ count[$2]++ }
 			END {
-				printf "\033[1;38;2;247;118;142m⚠ %d blocked\033[0m  \033[1;38;2;115;218;202m◆ %d done\033[0m  ", count["blocked"], count["done"]
-				printf "\033[1;38;2;122;162;247m● %d working\033[0m  \033[1;38;2;187;154;247m◐ %d background\033[0m  \033[1;38;2;115;122;162m○ %d idle\033[0m\n", count["working"], count["background"], count["idle"]
-				printf "\033[38;2;115;122;162menter go · esc back · . jump labels\033[0m\n"
-				printf "\033[38;2;115;122;162mctrl-r reply · ctrl-o approve\033[0m\n"
+				split("blocked done working background idle", states, " ")
+				split("⚠ ◆ ● ◐ ○", marks, " ")
+				split("247;118;142 115;218;202 122;162;247 187;154;247 115;122;162", colors, " ")
+				for (i = 1; i <= 5; i++)
+					if (count[states[i]]) {
+						printf "%s\033[38;2;%sm%s %d %s\033[0m", shown ? "   " : "", colors[i], marks[i], count[states[i]], states[i]
+						shown = 1
+					}
+				print shown ? "" : "\033[38;2;115;122;162mNo agents in tmux\033[0m"
 			}' "$AGENTS_DIR/shown"
 		;;
 	esac
@@ -320,8 +388,8 @@ label)
 	esac
 	;;
 preview)
-	# awk drops trailing blank lines, so "follow" shows the end of the pane's text.
-	tmux capture-pane -ep -t "$2" | awk 'NF { for (; n > 0; n--) print ""; print; next } { n++ }'
+	# Without trailing blank lines, so "follow" shows the end of the pane's text.
+	"$snapshot" transcript "$2"
 	;;
 status)
 	# Empty when nothing is blocked or done, so the status line only changes when

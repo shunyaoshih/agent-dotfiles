@@ -19,8 +19,10 @@
 # of the dashboard that knows where agent state comes from, or what an agent's
 # screen looks like:
 #
-#   agents-snapshot.pl approval PANE_ID   the prompt the agent is waiting on
-#   agents-snapshot.pl input PANE_ID      whether a reply can go in its input box
+#   agents-snapshot.pl approval PANE_ID     the prompt the agent is waiting on
+#   agents-snapshot.pl input PANE_ID        whether a reply can go in its input box
+#   agents-snapshot.pl transcript PANE_ID   its history, without the input box
+#   agents-snapshot.pl prompts PANE_ID      where in that your prompts are
 #
 # approval prints KEY<tab>CHOICE, the key that picks the prompt's "1. Yes" and
 # that option's text, then the prompt as it is on screen. input prints nothing.
@@ -45,6 +47,8 @@ binmode STDOUT, ':utf8';
 
 exit approval($ARGV[1]) if ($ARGV[0] // '') eq 'approval';
 exit input($ARGV[1])    if ($ARGV[0] // '') eq 'input';
+exit transcript($ARGV[1]) if ($ARGV[0] // '') eq 'transcript';
+exit prompts($ARGV[1])    if ($ARGV[0] // '') eq 'prompts';
 
 my $sessions = ($ENV{CLAUDE_CONFIG_DIR} // "$ENV{HOME}/.claude") . '/sessions';
 
@@ -77,6 +81,7 @@ for my $file (grep { /\.json\z/ } readdir $dir) {
 	$agents{$pane} = {
 		status  => $session->{status} // '',
 		updated => $updated,
+		cwd     => $session->{cwd} // '',
 		id      => join('/', $session->{pid}, $session->{sessionId} // '', $updated),
 	};
 }
@@ -112,6 +117,7 @@ while (my $line = <$panes>) {
 		location => "$session:$window" . ($count > 1 ? ".$index" : ''),
 		agent    => $agent->{id},
 		title    => $title,
+		place    => place($agent->{cwd}),
 	};
 }
 close $panes;
@@ -119,16 +125,42 @@ close $panes;
 
 my $location_width = max(map { width($_->{location}) } @rows);
 my $title_width    = min(40, max(map { width($_->{title}) } @rows));
+my $place_width    = min(36, max(map { width($_->{place}) } @rows));
 
+# The marker's color says the state, so the word itself isn't shown.
 for my $row (@rows) {
 	my ($mark, $state_color, $text_color) = @{ $style{ $row->{state} } };
-	my $display = sprintf("%s%s %-10s\e[0m  %s%s  %s  %3s\e[0m",
-		$state_color, $mark, $row->{state}, $text_color,
+	my $display = sprintf("%s%s\e[0m %s%s  %s  \e[38;2;115;122;162m%s\e[0m  %s%3s\e[0m",
+		$state_color, $mark, $text_color,
 		fit($row->{location}, $location_width),
 		fit($row->{title},    $title_width),
+		fit($row->{place},    $place_width),
+		$row->{state} eq 'working' ? $state_color : $text_color,
 		$row->{state} eq 'working' ? 'now' : age($row->{updated}));
 	print join("\t", $row->{pane}, $row->{state}, $row->{location}, $row->{agent}, $row->{title},
 		$display), "\n";
+}
+
+# Where the agent was started, with ~ for home, and its git branch, read from
+# .git/HEAD rather than by running git, which would take a process per row every
+# 2 seconds. In a worktree, .git is a file that names the real git directory.
+sub place {
+	my ($cwd) = @_;
+	return '' if $cwd eq '';
+	(my $place = $cwd) =~ s/^\Q$ENV{HOME}\E(?=\/|\z)/~/;
+	for (my $dir = $cwd; $dir ne ''; $dir =~ s/\/[^\/]*\z//) {
+		my $git = "$dir/.git";
+		next unless -e $git;
+		if (-f $git && open(my $fh, '<', $git)) {
+			my ($path) = (<$fh> // '') =~ /^gitdir: (.+)/ or last;
+			$git = $path =~ m{^/} ? $path : "$dir/$path";
+		}
+		open(my $fh, '<', "$git/HEAD") or last;
+		my $head = <$fh> // '';
+		my $branch = $head =~ /^ref: refs\/heads\/(.+)/ ? $1 : substr($head, 0, 7);
+		return "$place · $branch";
+	}
+	return $place;
 }
 
 sub max { my $m = 0; for (@_) { $m = $_ if $_ > $m } $m }
@@ -209,5 +241,33 @@ sub input {
 	(my $text = $lines[$top + 1]) =~ s/\e\[2m.*?\e\[(?:0|22)?m//g;
 	return fail("has unsent text in its input box")
 		if $bottom > $top + 2 || plain($text) =~ /^❯\s*\S/;
+	return 0;
+}
+
+# The pane's history and screen in color, down to the line above the input box.
+# The box, its rules and the hints under it are the same on every agent, and once
+# wrapped to the preview's width they turn into rows of rules. A dialog is kept,
+# since it's what the agent is waiting on.
+sub transcript_lines {
+	my @lines = screen($_[0], '-e', '-S', '-') or return;
+	my ($top) = (rules(@lines))[-2];
+	if (defined $top && plain($lines[$top + 1]) =~ /^❯/) {
+		splice @lines, $top;
+		pop @lines while @lines && plain($lines[-1]) =~ /^\s*$/;
+	}
+	return @lines;
+}
+
+sub transcript {
+	my @lines = transcript_lines($_[0]) or return 1;
+	print map { "$_\n" } @lines;
+	return 0;
+}
+
+# The transcript's line count, then the number of each line where you wrote to
+# the agent, the same lines tmux.conf's [ and ] jump to in copy mode.
+sub prompts {
+	my @lines = transcript_lines($_[0]) or return 1;
+	print scalar(@lines), "\n", map { plain($lines[$_]) =~ /^❯ / ? $_ + 1 . "\n" : () } 0 .. $#lines;
 	return 0;
 }
