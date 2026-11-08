@@ -182,9 +182,12 @@ view)
 	trap 'kill "$ticker" 2>/dev/null; rm -rf "$AGENTS_DIR"' EXIT
 	trap 'exit 0' HUP INT TERM
 
+	# fzf's theme is darker than Ghostty's background, which would show as a border
+	# around this full-window list, so it uses Ghostty's color instead.
 	while :; do
 		rm -f "$AGENTS_DIR/mode" "$AGENTS_DIR/message"
 		row=$("$snapshot" | tee "$AGENTS_DIR/shown" | fzf \
+			--color=bg:#1a1b26,gutter:#1a1b26 \
 			--no-sort --delimiter="$tab" --with-nth=6 --prompt='agents> ' \
 			--header-first --no-separator --no-scrollbar --footer="$keys" \
 			--preview "$preview" \
