@@ -15,6 +15,21 @@ defaults write com.apple.WindowManager StandardHideWidgets -bool true
 defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
 defaults write com.apple.finder CreateDesktop -bool false
 
+# Trackpad: tap to click, so a two-finger tap is a right click, and drag with
+# three fingers. Three-finger drag takes three-finger swipes, so swipes between
+# spaces and to Mission Control use four fingers only, as System Settings does.
+# The built-in and Bluetooth trackpads keep separate settings. These take
+# effect at the next login.
+for domain in com.apple.AppleMultitouchTrackpad com.apple.driver.AppleBluetoothMultitouch.trackpad; do
+	defaults write "$domain" Clicking -bool true
+	defaults write "$domain" TrackpadRightClick -bool true
+	defaults write "$domain" TrackpadThreeFingerDrag -bool true
+	defaults write "$domain" TrackpadThreeFingerHorizSwipeGesture -int 0
+	defaults write "$domain" TrackpadThreeFingerVertSwipeGesture -int 0
+done
+defaults write -g com.apple.mouse.tapBehavior -int 1
+defaults -currentHost write -g com.apple.mouse.tapBehavior -int 1
+
 # Chinese input, Traditional: Zhuyin and Pinyin. The input API applies them at
 # once and ignores ones that are already on.
 swift - <<'EOF'
