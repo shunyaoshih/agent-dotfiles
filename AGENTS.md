@@ -129,6 +129,13 @@ file is absent, and add a row above.
   prompt's words). Done is a turn that ended after the pane was last looked at,
   which `pane-focus-in`/`-out` hooks record in the pane option `@agents_seen`. The
   blocked and done counts are also in `status-right`, prepended to the theme's.
+  Ctrl-R replies to an agent and Ctrl-O approves its prompt (y, then Enter), with
+  keys sent only to the row's %pane id, and only if a fresh snapshot still shows
+  the same agent and state (and, to approve, the same prompt) as the row picked.
+  Replies are refused while an agent is working or blocked, because their Enter
+  could answer a permission prompt. What an agent's screen looks like (its prompt,
+  its input box) is also known only to `agents-snapshot.pl`. Approving sends `1`,
+  and a reply is a bracketed paste then Enter, both tested against Claude Code.
   `tokyonight_night.tmux` is a verbatim copy of the upstream extra; refresh it
   from upstream rather than editing it.
 - `fish/config.fish`: env, PATH and aliases. `conf.d/tokyonight_night.fish`

@@ -2,7 +2,7 @@
 # Print one tab-separated row per live Claude Code pane on this tmux server,
 # what needs you first:
 #
-#   PANE_ID  STATE  LOCATION  DISPLAY
+#   PANE_ID  STATE  LOCATION  AGENT  TITLE  DISPLAY
 #
 # STATE is, in the order rows are sorted (most recently changed first within
 # each):
@@ -13,8 +13,19 @@
 #               can take new input
 #   idle        nothing new to see
 # LOCATION is session:window, plus .pane when the window has several panes.
-# DISPLAY is the colored text to show. This is the only part of the dashboard
-# that knows where agent state comes from.
+# AGENT changes whenever the pane gets another agent or its status changes, so
+# the dashboard can tell that a row is out of date before it sends keys. TITLE is
+# the pane's title, and DISPLAY the colored text to show. This is the only part
+# of the dashboard that knows where agent state comes from, or what an agent's
+# screen looks like:
+#
+#   agents-snapshot.pl approval PANE_ID   the prompt the agent is waiting on
+#   agents-snapshot.pl input PANE_ID      whether a reply can go in its input box
+#
+# approval prints KEY<tab>CHOICE, the key that picks the prompt's "1. Yes" and
+# that option's text, then the prompt as it is on screen. input prints nothing.
+# If they can't, both print why, worded to follow the agent's location, and exit
+# 1.
 #
 # Claude Code keeps one <pid>.json per process in ~/.claude/sessions. Its tmux
 # field looks like "corner:@209.%209"; only the %id is used, because the session
@@ -31,6 +42,9 @@ use utf8;
 use JSON::PP ();
 
 binmode STDOUT, ':utf8';
+
+exit approval($ARGV[1]) if ($ARGV[0] // '') eq 'approval';
+exit input($ARGV[1])    if ($ARGV[0] // '') eq 'input';
 
 my $sessions = ($ENV{CLAUDE_CONFIG_DIR} // "$ENV{HOME}/.claude") . '/sessions';
 
@@ -60,7 +74,11 @@ for my $file (grep { /\.json\z/ } readdir $dir) {
 	next unless kill(0, $session->{pid}) || $!{EPERM};
 	my $updated = $session->{statusUpdatedAt} // 0;
 	next if $agents{$pane} && $agents{$pane}{updated} >= $updated;
-	$agents{$pane} = { status => $session->{status} // '', updated => $updated };
+	$agents{$pane} = {
+		status  => $session->{status} // '',
+		updated => $updated,
+		id      => join('/', $session->{pid}, $session->{sessionId} // '', $updated),
+	};
 }
 
 # -u because tmux replaces non-ASCII output with _ if the locale isn't UTF-8.
@@ -92,6 +110,7 @@ while (my $line = <$panes>) {
 		state    => $state,
 		updated  => $agent->{updated},
 		location => "$session:$window" . ($count > 1 ? ".$index" : ''),
+		agent    => $agent->{id},
 		title    => $title,
 	};
 }
@@ -108,7 +127,8 @@ for my $row (@rows) {
 		fit($row->{location}, $location_width),
 		fit($row->{title},    $title_width),
 		$row->{state} eq 'working' ? 'now' : age($row->{updated}));
-	print join("\t", $row->{pane}, $row->{state}, $row->{location}, $display), "\n";
+	print join("\t", $row->{pane}, $row->{state}, $row->{location}, $row->{agent}, $row->{title},
+		$display), "\n";
 }
 
 sub max { my $m = 0; for (@_) { $m = $_ if $_ > $m } $m }
@@ -147,4 +167,47 @@ sub fit {
 		$text = "$fitted…";
 	}
 	return $text . ' ' x ($columns - width($text));
+}
+
+# Claude Code draws a full-width rule of ─ above its input box and below it, and
+# a dialog replaces both with one rule above the dialog, which runs to the
+# bottom. These read the visible screen, without trailing blank lines.
+sub screen {
+	my ($pane, @flags) = @_;
+	open(my $fh, '-|', 'tmux', '-u', 'capture-pane', '-p', @flags, '-t', $pane) or return;
+	my @lines = <$fh>;
+	close $fh or return;
+	chomp @lines;
+	utf8::decode($_) for @lines;
+	pop @lines while @lines && $lines[-1] =~ /^\s*$/;
+	return @lines;
+}
+
+sub plain { (my $text = $_[0]) =~ s/\e\[[0-9;:]*m//g; return $text }
+sub rules { my @lines = @_; return grep { plain($lines[$_]) =~ /^─{20,}\s*$/ } 0 .. $#lines }
+sub fail  { print "$_[0]\n"; return 1 }
+
+sub approval {
+	my @lines = screen($_[0]) or return fail("is gone");
+	my ($top) = reverse rules(@lines);
+	return fail("has no prompt on its screen") unless defined $top;
+	my @prompt = @lines[$top + 1 .. $#lines];
+	my ($choice) = map { /^\s*(?:❯\s*)?(1\.\s+Yes\b.*?)\s*$/ ? $1 : () } @prompt;
+	return fail('has no "1. Yes" in its prompt to approve') unless $choice;
+	print "1\t$choice\n", map { "$_\n" } @prompt;
+	return 0;
+}
+
+# An empty input box shows a dim placeholder at most. A box that isn't the last
+# thing between rules means a menu or dialog is open, where a reply's Enter would
+# pick an option.
+sub input {
+	my @lines = screen($_[0], '-e') or return fail("is gone");
+	my ($top, $bottom) = (rules(@lines))[-2, -1];
+	return fail("isn't showing its input box, so a menu or dialog may be open")
+		unless defined $top && $bottom > $top + 1 && plain($lines[$top + 1]) =~ /^❯/;
+	(my $text = $lines[$top + 1]) =~ s/\e\[2m.*?\e\[(?:0|22)?m//g;
+	return fail("has unsent text in its input box")
+		if $bottom > $top + 2 || plain($text) =~ /^❯\s*\S/;
+	return 0;
 }
