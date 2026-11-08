@@ -8,7 +8,8 @@ Maintained by agents; see [AGENTS.md](AGENTS.md) for the conventions.
 ## Install
 
 On a new Mac, install [Homebrew](https://brew.sh) and the Claude desktop app by
-hand, then ask Claude Code to set up this repo. Check the dependencies first;
+hand and sign in to the App Store (`brew bundle` installs Xcode from it), then
+ask Claude Code to set up this repo. Check the dependencies first;
 they're listed under "Setting up a machine" in [AGENTS.md](AGENTS.md).
 
 ```sh
@@ -28,6 +29,7 @@ password:
 gh auth login && gh auth setup-git             # git over HTTPS
 echo /opt/homebrew/bin/fish | sudo tee -a /etc/shells
 chsh -s /opt/homebrew/bin/fish                 # Ghostty and tmux use the login shell
+sudo xcode-select -s /Applications/Xcode.app   # xcodebuild needs Xcode, not the command line tools
 ```
 
 Then:
@@ -37,11 +39,12 @@ Then:
 2. Open Ghostty and AeroSpace and allow Accessibility access for each: Ghostty's
    `alt+space` global keybind needs it, and AeroSpace can't manage windows
    without it.
-3. Install LINE from the App Store, since it isn't on Homebrew.
-4. Remove the desktop widgets a new Mac comes with: reveal the desktop,
+3. Open Xcode once to accept its license and install its components.
+4. Install LINE from the App Store, since it isn't on Homebrew.
+5. Remove the desktop widgets a new Mac comes with: reveal the desktop,
    right-click each widget, and choose Remove Widget. The script only hides
    widgets while windows are open.
-5. Log out and back in, so the input source shortcuts (`ctrl+space`) take
+6. Log out and back in, so the input source shortcuts (`ctrl+space`) take
    effect.
 
 ## Per-machine overrides

@@ -46,6 +46,7 @@ about anything missing or too old. Don't install system packages without asking.
 | AeroSpace | 0.21 | 0.21 | not used | `aerospace/`; comes from the developer's own Homebrew tap |
 | Chrome, Telegram | any | ✓ | not used | their AeroSpace workspaces |
 | Claude Code | any | ✓ | check | the `c` alias, `claude/skills/` |
+| Xcode | any | 27.2 | not used | iOS development; installed from the App Store by `mas` |
 
 On macOS, `brew bundle --file Brewfile` installs all of these; keep the
 Brewfile in sync with this table. Then run `./install.sh LOCAL_DIR` (see below)
@@ -71,6 +72,12 @@ put `claude` on PATH. Besides the README's install commands:
   either). Then ask them to open Google Drive, sign in, and approve its system
   extension and File Provider access, without which Drive doesn't mount in
   Finder.
+- `brew bundle` installs Xcode through `mas`, which can't sign in to the App
+  Store; ask the user to sign in to the App Store app before running it. Once
+  Xcode is installed, ask the user to run `sudo xcode-select -s
+  /Applications/Xcode.app` (the command line tools stay the developer directory
+  otherwise, and `xcodebuild` needs Xcode), then open Xcode once to accept its
+  license and install its components.
 - Ask the user to install LINE from the App Store, since it isn't on Homebrew.
 - Ask the user to remove the default desktop widgets by hand. `defaults.sh` hides
   widgets while windows are open, but revealing the desktop still shows them,
