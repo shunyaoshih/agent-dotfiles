@@ -18,4 +18,5 @@ cask "google-drive" # Drive as a Finder folder
 cask "nikitabobko/tap/aerospace"
 cask "telegram"
 
+mas "LINE", id: 539883307
 mas "Xcode", id: 497799835 # not on Homebrew; Apple ships it only through the App Store

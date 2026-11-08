@@ -44,7 +44,7 @@ about anything missing or too old. Don't install system packages without asking.
 | fzf | 0.53 (`--highlight-line` in the theme; `fzf --fish` needs 0.48; the agent dashboard's `--footer` needs 0.63) | 0.74 | check | Ctrl-T / Ctrl-R / Alt-C in fish and the tmux agent dashboard; skipped silently if missing, so a missing fzf won't show as an error |
 | Ghostty | 1.3 | 1.4 | not used | `ghostty/`; 1.3 is needed for the AppleScript used by the `sg` alias |
 | AeroSpace | 0.21 | 0.21 | not used | `aerospace/`; comes from the developer's own Homebrew tap |
-| Chrome, Telegram | any | ✓ | not used | their AeroSpace workspaces |
+| Chrome, Telegram, LINE | any | ✓ | not used | their AeroSpace workspaces; LINE comes from the App Store by `mas` |
 | Claude Code | any | ✓ | check | the `c` alias, `claude/skills/` |
 | Xcode | any | 27.2 | not used | iOS development; installed from the App Store by `mas` |
 
@@ -78,7 +78,6 @@ put `claude` on PATH. Besides the README's install commands:
   /Applications/Xcode.app` (the command line tools stay the developer directory
   otherwise, and `xcodebuild` needs Xcode), then open Xcode once to accept its
   license and install its components.
-- Ask the user to install LINE from the App Store, since it isn't on Homebrew.
 - Ask the user to remove the default desktop widgets by hand. `defaults.sh` hides
   widgets while windows are open, but revealing the desktop still shows them,
   and their storage isn't a stable file to script.
