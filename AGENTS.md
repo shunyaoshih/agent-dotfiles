@@ -50,6 +50,7 @@ about anything missing or too old. Don't install system packages without asking.
 | Claude Code | any | ✓ | check | the `c` alias, `claude/skills/` |
 | Claude Usage Tracker | any | 3.3.0 | not used | Claude usage limits in the menu bar; comes from the developer's own Homebrew tap |
 | Xcode | any | 27.2 | not used | iOS development; installed from the App Store by `mas` |
+| zstd, python@3.11, picotool | any | ✓ | not used | keyboard firmware: Arm's compiler, the `qmk` CLI's venv, flashing |
 
 On macOS, `brew bundle --file Brewfile` installs all of these; keep the
 Brewfile in sync with this table. Then run `./install.sh LOCAL_DIR` (see below)
@@ -100,6 +101,9 @@ put `claude` on PATH. Besides the README's install commands:
 - Ask the user to remove the default desktop widgets by hand. `defaults.sh` hides
   widgets while windows are open, but revealing the desktop still shows them,
   and their storage isn't a stable file to script.
+- For the keyboard firmware, ask the user whether to set it up, then clone their
+  private keymap repo and follow its README. This repo is public, so keep that
+  repo's name and contents out of it.
 
 ## Per-machine config
 

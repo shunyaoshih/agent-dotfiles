@@ -10,7 +10,10 @@ brew "git"
 brew "gh" # git uses it to log in to GitHub (gh auth setup-git)
 brew "mas" # installs the App Store apps below; it can't sign in, so do that first
 brew "neovim"
+brew "picotool" # flashes the keyboard firmware
+brew "python@3.11" # for the qmk CLI's venv
 brew "tmux"
+brew "zstd" # Arm's compiler for the keyboard firmware needs it
 
 cask "1password" # fills logins in native apps too (Universal Autofill)
 cask "claude-code" # the `claude` CLI; the desktop app doesn't put one on PATH
