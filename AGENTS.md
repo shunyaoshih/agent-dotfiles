@@ -177,13 +177,8 @@ file is absent, and add a row above.
   prompt's words). Done is a turn that ended after the pane was last looked at,
   which `pane-focus-in`/`-out` hooks record in the pane option `@agents_seen`. The
   blocked and done counts are also in `status-right`, prepended to the theme's.
-  Ctrl-R replies to an agent and Ctrl-O approves its prompt (y, then Enter), with
-  keys sent only to the row's %pane id, and only if a fresh snapshot still shows
-  the same agent and state (and, to approve, the same prompt) as the row picked.
-  Replies are refused while an agent is working or blocked, because their Enter
-  could answer a permission prompt. What an agent's screen looks like (its prompt,
-  its input box) is also known only to `agents-snapshot.pl`. Approving sends `1`,
-  and a reply is a bracketed paste then Enter, both tested against Claude Code.
+  What an agent's screen looks like (its input box) is also known only to
+  `agents-snapshot.pl`.
   The preview shows the pane's whole history and follows its end; Ctrl-U/Ctrl-D
   and `[`/`]` scroll it the way copy mode does, with the dashboard keeping the
   top line itself, since fzf doesn't report its scroll position.

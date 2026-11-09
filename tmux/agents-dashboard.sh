@@ -5,14 +5,6 @@
 # prefix a always goes to the dashboard, wherever it is, and Esc goes back to the
 # pane you came from. To give it another home, use the default prefix . in it.
 #
-# Ctrl-R replies to the selected agent and Ctrl-O approves its prompt. Both lock
-# in the row and turn fzf's query into the reply or the answer to "approve?",
-# and the list doesn't refresh until you send or cancel. Just before sending, the
-# row has to still be right: the pane holds the same agent in the same state and,
-# to approve, shows the same prompt you were shown. Otherwise nothing is sent and
-# the header says why. Replies go only to agents between turns: a working agent
-# can open a permission prompt at any moment, and a reply's Enter would answer it.
-#
 # The preview follows the end of the selected agent's conversation. To read back,
 # Ctrl-U and Ctrl-D scroll it half a page, and [ and ] jump to the previous and
 # next prompt you wrote, as in copy mode. Going past the end, or to another row,
@@ -21,11 +13,9 @@
 # Usage: agents-dashboard.sh open CLIENT PANE_ID SESSION_ID   go to it (prefix a)
 #        agents-dashboard.sh view                             fzf, in the _agents pane
 #        agents-dashboard.sh cursor                           fzf's load handler
-#        agents-dashboard.sh key KEY [PANE_ID]                fzf's enter, esc, reply
-#                                                             and approve handler
 #        agents-dashboard.sh scroll KEY PANE_ID               fzf's preview scrolling
 #                                                             handler
-#        agents-dashboard.sh header|label|preview PANE_ID     what fzf shows
+#        agents-dashboard.sh header|preview PANE_ID           what fzf shows
 #        agents-dashboard.sh keep                             tmux's window-unlinked hook
 #        agents-dashboard.sh status                           blocked and done counts
 #                                                             for tmux's status-right
@@ -36,9 +26,7 @@
 # The tick has to be separate from the reload: {1} is evaluated when an action
 # fires, so a sleep inside the reload would save the row from before the wait.
 # {1} is also kept out of the reload itself, because fzf skips any command that
-# uses it when nothing matches the query, so the list would stop updating. F11
-# and F12 are sent only to the dashboard's own pane, and are unbound while you
-# type a reply, so a refresh already on its way can't move the cursor.
+# uses it when nothing matches the query, so the list would stop updating.
 
 self=$HOME/.config/tmux/agents-dashboard.sh
 snapshot=$HOME/.config/tmux/agents-snapshot.pl
@@ -50,9 +38,7 @@ preview="\"$self\" preview {1}"
 preview_window='down,70%,wrap,follow,noinfo,border-top'
 label="transform-preview-label(printf ' %s · %s ' {3} {2})"
 dim=$(printf '\033[38;2;115;122;162m') off=$(printf '\033[0m')
-keys="${dim}enter go · esc back · . jump · ctrl-u/d scroll · [ ] prompts · ctrl-r reply · ctrl-o approve${off}"
-# Keys for the list only, unbound while you type a reply or an approval.
-list_keys='f11,f12,focus,.,ctrl-u,ctrl-d,[,]'
+keys="${dim}enter go · esc back · . jump · ctrl-u/d scroll · [ ] prompts${off}"
 reload="\"$snapshot\" | tee \"\$AGENTS_DIR/shown\""
 
 # Send the client viewing the dashboard to pane $1. It's the most recently active
@@ -73,7 +59,6 @@ tick() {
 	while sleep 2; do
 		viewers=$(tmux display-message -p -t "$TMUX_PANE" '#{window_active_clients}') || exit 0
 		[ "$viewers" != 0 ] || continue
-		[ ! -e "$AGENTS_DIR/mode" ] || continue
 		# Any key cancels fzf's jump mode, so give the user time to press a label.
 		if [ -e "$AGENTS_DIR/pause" ]; then
 			rm -f "$AGENTS_DIR/pause"
@@ -83,61 +68,6 @@ tick() {
 		cmp -s "$AGENTS_DIR/next" "$AGENTS_DIR/shown" || tmux send-keys -t "$TMUX_PANE" F12
 		tmux send-keys -t "$TMUX_PANE" F11
 	done
-}
-
-# Leave a message under the header, ok or no, until the next reply or approval.
-note() {
-	printf '%s\t%s\n' "$1" "$2" >"$AGENTS_DIR/message"
-}
-
-# Leave a message and stop handling the key.
-say() {
-	note "$1" "$2"
-	echo "transform-header(\"$self\" header)"
-	exit 0
-}
-
-# Why keys can't go to the locked-in row's pane now, or nothing if they can: it
-# still has the same agent in the same state, and passes keys straight to it.
-check() {
-	IFS=$tab read -r pane state location agent _ <"$AGENTS_DIR/target"
-	"$snapshot" | awk -F '\t' -v id="$pane" -v state="$state" -v agent="$agent" -v where="$location" '
-		$1 == id {
-			found = 1
-			split($4, now, "/")
-			split(agent, then, "/")
-			if (now[1] != then[1] || now[2] != then[2]) print where " has a different agent now"
-			else if ($2 != state) print where " went from " state " to " $2
-			else if ($4 != agent) print where " changed and is " state " again"
-		}
-		END { if (!found) print where " is gone or has no agent now" }' | grep . && return
-	case $(tmux display-message -p -t "$pane" '#{pane_in_mode}#{synchronize-panes}') in
-	00) ;;
-	1*) echo "$location is in copy mode, which would take the keys" ;;
-	*) echo "$location has synchronize-panes on, which would send the keys to every pane in its window" ;;
-	esac
-}
-
-# Lock in the row and switch fzf to typing in mode $1, reply or approve.
-start() {
-	printf %s "$FZF_QUERY" >"$AGENTS_DIR/query"
-	echo "$1" >"$AGENTS_DIR/mode"
-	rm -f "$AGENTS_DIR/scroll"
-	printf 'unbind(%s)+disable-search+clear-query+change-prompt(%s)+change-footer(%s)' "$list_keys" "$2" "$3"
-	printf '+transform-header("%s" header)+transform-preview-label("%s" label)' "$self" "$self"
-	if [ "$1" = reply ]; then
-		printf '+change-preview("%s" preview %s)\n' "$self" "$pane"
-	else
-		printf '+change-preview(tail -n +2 "$AGENTS_DIR/prompt")+change-preview-window(down,70%%,wrap,noinfo,border-top)\n'
-	fi
-}
-
-# Back to the list, with the search restored and the cursor on the locked-in row.
-leave() {
-	rm -f "$AGENTS_DIR/mode"
-	cut -f 1 "$AGENTS_DIR/target" >"$AGENTS_DIR/cursor"
-	echo "rebind($list_keys)+change-prompt(agents> )+change-footer($keys)+transform-query(cat \"\$AGENTS_DIR/query\")+enable-search+change-preview($preview)+change-preview-window($preview_window)+reload-sync($reload)"
-	exit 0
 }
 
 case $1 in
@@ -185,18 +115,14 @@ view)
 	# fzf's theme is darker than Ghostty's background, which would show as a border
 	# around this full-window list, so it uses Ghostty's color instead.
 	while :; do
-		rm -f "$AGENTS_DIR/mode" "$AGENTS_DIR/message"
 		row=$("$snapshot" | tee "$AGENTS_DIR/shown" | fzf \
 			--color=bg:#1a1b26,gutter:#1a1b26 \
-			--no-sort --delimiter="$tab" --with-nth=6 --prompt='agents> ' \
+			--no-sort --delimiter="$tab" --with-nth=4 --prompt='agents> ' \
 			--header-first --no-separator --no-scrollbar --footer="$keys" \
 			--preview "$preview" \
 			--preview-window="$preview_window" \
 			--jump-labels "ntesaroibwfmuc,l'yzkhd\"gjxqpv" \
-			--bind "enter:transform(\"$self\" key enter)" \
-			--bind "esc:transform(\"$self\" key esc)" \
-			--bind "ctrl-r:transform(\"$self\" key reply {1})" \
-			--bind "ctrl-o:transform(\"$self\" key approve {1})" \
+			--bind enter:accept-non-empty \
 			--bind '.:execute-silent(touch "$AGENTS_DIR/pause")+jump-accept' \
 			--bind "f12:execute-silent(printf %s {1} >\"\$AGENTS_DIR/cursor\")+reload-sync($reload)" \
 			--bind "load:transform(\"$self\" cursor)" \
@@ -269,7 +195,7 @@ cursor)
 	id=$(cat "$AGENTS_DIR/cursor" 2>/dev/null)
 	if [ -n "$FZF_QUERY" ]; then
 		# --nth searches the same text as the view's --with-nth, but keeps field 1.
-		position=$(fzf --filter="$FZF_QUERY" --no-sort --delimiter="$tab" --nth=6 <"$rows" |
+		position=$(fzf --filter="$FZF_QUERY" --no-sort --delimiter="$tab" --nth=4 <"$rows" |
 			awk -F '\t' -v id="$id" '$1 == id { print NR; exit }')
 	else
 		position=$(awk -F '\t' -v id="$id" '$1 == id { print NR; exit }' "$rows")
@@ -277,115 +203,18 @@ cursor)
 	[ -z "$position" ] || printf 'pos(%s)+' "$position"
 	echo "transform-header(\"$self\" header)"
 	;;
-key)
-	mode=$(cat "$AGENTS_DIR/mode" 2>/dev/null)
-	case $mode:$2 in
-	:enter) echo accept-non-empty ;;
-	:esc) echo abort ;;
-	:reply | :approve)
-		rm -f "$AGENTS_DIR/message"
-		awk -F '\t' -v id="$3" '$1 == id' "$AGENTS_DIR/shown" >"$AGENTS_DIR/target"
-		IFS=$tab read -r pane state location _ <"$AGENTS_DIR/target"
-		if [ "$2" = reply ]; then
-			case $state in
-			blocked) say no "$location is waiting on a prompt: approve it with ctrl-o, or go to it with enter" ;;
-			working) say no "$location is working: reply once it's done, or go to it with enter" ;;
-			esac
-		else
-			[ "$state" = blocked ] || say no "$location isn't waiting on a prompt"
-		fi
-		reason=$(check)
-		[ -z "$reason" ] || say no "$reason"
-		if [ "$2" = reply ]; then
-			reason=$("$snapshot" input "$pane" 2>/dev/null) || say no "$location $reason"
-			start reply 'reply> ' "${dim}enter send · esc cancel${off}"
-		else
-			"$snapshot" approval "$pane" >"$AGENTS_DIR/prompt" 2>/dev/null ||
-				say no "$location $(cat "$AGENTS_DIR/prompt")"
-			start approve 'type y to approve> ' "${dim}y, then enter, approves · esc cancel${off}"
-		fi
-		;;
-	reply:esc | approve:esc)
-		rm -f "$AGENTS_DIR/message"
-		leave
-		;;
-	reply:enter)
-		IFS=$tab read -r pane state location _ <"$AGENTS_DIR/target"
-		[ -n "$FZF_QUERY" ] || { note no "Nothing sent: the reply was empty"; leave; }
-		reason=$("$snapshot" input "$pane" 2>/dev/null) || { note no "Not sent: $location $reason"; leave; }
-		reason=$(check)
-		[ -z "$reason" ] || { note no "Not sent: $reason"; leave; }
-		# A bracketed paste, so the agent takes the text as typed, then Enter.
-		if tmux set-buffer -b _agents_reply -- "$FZF_QUERY" &&
-			tmux paste-buffer -p -d -b _agents_reply -t "$pane" &&
-			tmux send-keys -t "$pane" Enter; then
-			note ok "Sent to $location: $FZF_QUERY"
-		else
-			tmux delete-buffer -b _agents_reply 2>/dev/null
-			note no "Couldn't send to $location"
-		fi
-		leave
-		;;
-	approve:enter)
-		IFS=$tab read -r pane state location _ <"$AGENTS_DIR/target"
-		IFS=$tab read -r key choice <"$AGENTS_DIR/prompt"
-		case $FZF_QUERY in
-		y | Y | yes | Yes | YES) ;;
-		*) note no "Not approved: type y, then enter"; leave ;;
-		esac
-		reason=$(check)
-		[ -z "$reason" ] || { note no "Not approved: $reason"; leave; }
-		"$snapshot" approval "$pane" 2>/dev/null | cmp -s - "$AGENTS_DIR/prompt" ||
-			{ note no "Not approved: the prompt on $location changed since you were shown it"; leave; }
-		if tmux send-keys -t "$pane" -l "$key"; then
-			note ok "Approved $location: sent $key, for \"$choice\""
-		else
-			note no "Couldn't send to $location"
-		fi
-		leave
-		;;
-	esac
-	;;
 header)
-	mode=$(cat "$AGENTS_DIR/mode" 2>/dev/null)
-	IFS=$tab read -r pane state location agent title _ <"$AGENTS_DIR/target" 2>/dev/null
-	bold='\033[1;38;2;192;202;245m'
-	case $mode in
-	reply)
-		printf "${bold}Reply to %s${off}  %s  ($state)\n" "$location" "$title"
-		;;
-	approve)
-		IFS=$tab read -r key choice <"$AGENTS_DIR/prompt"
-		printf "${bold}Approve for %s?${off}  %s\n" "$location" "$title"
-		printf "${dim}sends %s, for \"%s\"${off}\n" "$key" "$choice"
-		;;
-	*)
-		# Every state, even with no agents in it, in the rows' order.
-		awk -F '\t' '
-			{ count[$2]++ }
-			END {
-				split("blocked done working background idle", states, " ")
-				split("⚠ ◆ ● ◐ ○", marks, " ")
-				split("247;118;142 115;218;202 122;162;247 187;154;247 115;122;162", colors, " ")
-				for (i = 1; i <= 5; i++)
-					printf "%s\033[38;2;%sm%s %d %s\033[0m", (i > 1 ? "   " : ""), colors[i], marks[i], count[states[i]], states[i]
-				print ""
-			}' "$AGENTS_DIR/shown"
-		;;
-	esac
-	if IFS=$tab read -r kind text <"$AGENTS_DIR/message" 2>/dev/null; then
-		case $kind in
-		ok) printf '\033[38;2;115;218;202m✓ %s\033[0m\n' "$text" ;;
-		*) printf '\033[38;2;247;118;142m✗ %s\033[0m\n' "$text" ;;
-		esac
-	fi
-	;;
-label)
-	location=$(cut -f 3 "$AGENTS_DIR/target")
-	case $(cat "$AGENTS_DIR/mode") in
-	reply) printf '%s' "$location" ;;
-	*) printf 'the prompt %s is waiting on' "$location" ;;
-	esac
+	# Every state, even with no agents in it, in the rows' order.
+	awk -F '\t' '
+		{ count[$2]++ }
+		END {
+			split("blocked done working background idle", states, " ")
+			split("⚠ ◆ ● ◐ ○", marks, " ")
+			split("247;118;142 115;218;202 122;162;247 187;154;247 115;122;162", colors, " ")
+			for (i = 1; i <= 5; i++)
+				printf "%s\033[38;2;%sm%s %d %s\033[0m", (i > 1 ? "   " : ""), colors[i], marks[i], count[states[i]], states[i]
+			print ""
+		}' "$AGENTS_DIR/shown"
 	;;
 preview)
 	# Without trailing blank lines, so "follow" shows the end of the pane's text.
