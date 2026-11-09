@@ -6,11 +6,11 @@ config-version = 2
 start-at-login = true
 
 [mode.main.binding]
-# One workspace per main app, plus one for messaging: c Claude, d Discord,
-# g Google Chrome, m messaging, t terminal. ctrl+alt+letter jumps to it and opens the app if it
-# isn't running. -g keeps M on whichever messaging app was last in use.
+# One workspace per main app, plus one for messaging: c Claude, d Discord and
+# Messenger, g Google Chrome, m messaging, t terminal. ctrl+alt+letter jumps to it and opens the app if it
+# isn't running. -g keeps D and M on whichever app was last in use.
 ctrl-alt-c = ['workspace C', 'exec-and-forget open -a Claude']
-ctrl-alt-d = ['workspace D', 'exec-and-forget open -a Discord']
+ctrl-alt-d = ['workspace D', 'exec-and-forget open -g -a Discord; open -g -a Messenger']
 ctrl-alt-g = ['workspace G', 'exec-and-forget open -a "Google Chrome"']
 ctrl-alt-m = ['workspace M', 'exec-and-forget open -g -a LINE; open -g -a Telegram']
 ctrl-alt-t = ['workspace T', 'exec-and-forget open -a Ghostty']
@@ -36,6 +36,12 @@ run = 'move-node-to-workspace C'
 
 [[on-window-detected]]
 if.app-id = 'com.hnc.Discord'
+run = 'move-node-to-workspace D'
+
+# Messenger, installed as an app from Chrome. Chrome derives this ID from the
+# site, so it's the same on every Mac.
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome.app.bbdeiblfgdokhlblpgeaokenkfknecgl'
 run = 'move-node-to-workspace D'
 
 [[on-window-detected]]

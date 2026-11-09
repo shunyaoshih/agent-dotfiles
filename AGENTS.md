@@ -114,6 +114,9 @@ put `claude` on PATH. Besides the README's install commands:
   unpacked and pick that folder. Chrome Sync doesn't install unpacked extensions,
   so every Mac needs this. If Sync brings back BNTP, have them turn it off so the
   two don't compete for the new tab.
+- Ask the user to install Messenger as an app: open `messenger.com` in Chrome,
+  then Cast, Save, and Share › Install page as app. Brew has no cask for it, and
+  AeroSpace puts it on Discord's workspace.
 
 ## Per-machine config
 
@@ -196,7 +199,8 @@ file is absent, and add a row above.
   `/Applications/Ghostty.app/Contents/MacOS/ghostty +validate-config`; check the
   effective config with `+show-config`.
 - `aerospace/aerospace.toml`: AeroSpace config (MacBook only), linked as
-  `~/.config/aerospace`. Each main app gets a workspace, and LINE and Telegram
+  `~/.config/aerospace`. Each main app gets a workspace, Messenger shares
+  Discord's, and LINE and Telegram
   share one, reached with `ctrl+alt+letter`, because AeroSpace's default
   `alt+letter` keys would take over fish's Alt bindings in Ghostty. Other apps
   float, through a catch-all rule that needs an explicit `if = 'true'`. Apply
