@@ -13,6 +13,10 @@ fish_add_path -g ~/.local/bin
 # cds into a subdirectory.
 if status is-interactive; and command -q fzf
     fzf --fish | source
+    # Replaces fzf's default skip list, so it repeats .git and node_modules.
+    set -l walker_skip '--walker-skip=.git,node_modules,Library,.Trash,.cache'
+    set -gx FZF_ALT_C_OPTS $walker_skip
+    set -gx FZF_CTRL_T_OPTS $walker_skip
 end
 
 alias v=nvim
