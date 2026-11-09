@@ -360,7 +360,7 @@ header)
 		printf "${dim}sends %s, for \"%s\"${off}\n" "$key" "$choice"
 		;;
 	*)
-		# Only the states some agent is in, in the rows' order.
+		# Every state, even with no agents in it, in the rows' order.
 		awk -F '\t' '
 			{ count[$2]++ }
 			END {
@@ -368,11 +368,8 @@ header)
 				split("⚠ ◆ ● ◐ ○", marks, " ")
 				split("247;118;142 115;218;202 122;162;247 187;154;247 115;122;162", colors, " ")
 				for (i = 1; i <= 5; i++)
-					if (count[states[i]]) {
-						printf "%s\033[38;2;%sm%s %d %s\033[0m", shown ? "   " : "", colors[i], marks[i], count[states[i]], states[i]
-						shown = 1
-					}
-				print shown ? "" : "\033[38;2;115;122;162mNo agents in tmux\033[0m"
+					printf "%s\033[38;2;%sm%s %d %s\033[0m", (i > 1 ? "   " : ""), colors[i], marks[i], count[states[i]], states[i]
+				print ""
 			}' "$AGENTS_DIR/shown"
 		;;
 	esac
