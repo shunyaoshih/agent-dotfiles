@@ -48,6 +48,7 @@ about anything missing or too old. Don't install system packages without asking.
 | Discord, Steam | any | ✓ | not used | their AeroSpace workspaces; Steam for games |
 | 1Password | any | ✓ | not used | passwords; Universal Autofill fills logins outside the browser |
 | 1Password CLI | any | ✓ | not used | `op`, for reading items from scripts |
+| Notion | any | ✓ | not used | notes |
 | Claude Code | any | ✓ | check | the `c` alias, `claude/skills/` |
 | Claude Usage Tracker | any | 3.3.0 | not used | Claude usage limits in the menu bar; comes from the developer's own Homebrew tap |
 | Xcode | any | 27.2 | not used | iOS development; installed from the App Store by `mas` |

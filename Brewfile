@@ -24,6 +24,7 @@ cask "hamed-elfayome/claude-usage/claude-usage-tracker" # Claude usage limits in
 cask "google-chrome"
 cask "google-drive" # Drive as a Finder folder
 cask "nikitabobko/tap/aerospace"
+cask "notion"
 cask "steam"
 cask "telegram"
 
