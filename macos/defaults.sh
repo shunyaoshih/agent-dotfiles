@@ -9,10 +9,8 @@ set -eu
 defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock static-only -bool true
 
-# Keep the wallpaper clean: no widgets, files or drives on it. Files stay in
-# ~/Desktop, where Finder still shows them.
-defaults write com.apple.WindowManager StandardHideWidgets -bool true
-defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
+# Keep files and drives off the wallpaper. Files stay in ~/Desktop, where
+# Finder still shows them.
 defaults write com.apple.finder CreateDesktop -bool false
 
 # Trackpad: tap to click, so a two-finger tap is a right click, and drag with

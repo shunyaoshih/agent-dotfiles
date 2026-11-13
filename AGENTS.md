@@ -102,9 +102,6 @@ put `claude` on PATH. Besides the README's install commands:
   of several GB: with the user's OK, run `xcodebuild -downloadPlatform iOS`
   (no password needed), or they can click Get under Xcode's Settings ›
   Components. Check it with `xcrun simctl list runtimes`.
-- Ask the user to remove the default desktop widgets by hand. `defaults.sh` hides
-  widgets while windows are open, but revealing the desktop still shows them,
-  and their storage isn't a stable file to script.
 - For the keyboard firmware, ask the user whether to set it up, then clone their
   private keymap repo and follow its README. This repo is public, so keep that
   repo's name and contents out of it.

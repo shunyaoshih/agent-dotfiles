@@ -43,10 +43,7 @@ Then:
    without it.
 3. Open Xcode once to accept its license and install its components, then
    download the iOS simulator under Settings › Components.
-4. Remove the desktop widgets a new Mac comes with: reveal the desktop,
-   right-click each widget, and choose Remove Widget. The script only hides
-   widgets while windows are open.
-5. Log out and back in, so dark mode, the second language and the input source
+4. Log out and back in, so dark mode, the second language and the input source
    shortcuts (`ctrl+space`) take effect.
 
 ## Per-machine overrides
