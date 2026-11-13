@@ -7,12 +7,13 @@ start-at-login = true
 
 [mode.main.binding]
 # One workspace per main app, plus one for messaging: c Claude, d Discord and
-# Messenger, g Google Chrome, m messaging, t terminal. ctrl+alt+letter jumps to it and opens the app if it
+# Messenger, g Google Chrome, m messaging, s Steam, t terminal. ctrl+alt+letter jumps to it and opens the app if it
 # isn't running. -g keeps D and M on whichever app was last in use.
 ctrl-alt-c = ['workspace C', 'exec-and-forget open -a Claude']
 ctrl-alt-d = ['workspace D', 'exec-and-forget open -g -a Discord; open -g -a Messenger']
 ctrl-alt-g = ['workspace G', 'exec-and-forget open -a "Google Chrome"']
 ctrl-alt-m = ['workspace M', 'exec-and-forget open -g -a LINE; open -g -a Telegram']
+ctrl-alt-s = ['workspace S', 'exec-and-forget open -a Steam']
 ctrl-alt-t = ['workspace T', 'exec-and-forget open -a Ghostty']
 
 # Add shift to send the current window to that workspace, where it splits the
@@ -21,6 +22,7 @@ ctrl-alt-shift-c = 'move-node-to-workspace C --focus-follows-window'
 ctrl-alt-shift-d = 'move-node-to-workspace D --focus-follows-window'
 ctrl-alt-shift-g = 'move-node-to-workspace G --focus-follows-window'
 ctrl-alt-shift-m = 'move-node-to-workspace M --focus-follows-window'
+ctrl-alt-shift-s = 'move-node-to-workspace S --focus-follows-window'
 ctrl-alt-shift-t = 'move-node-to-workspace T --focus-follows-window'
 
 # Switch between windows on a workspace, wrapping around so either arrow always
@@ -47,6 +49,10 @@ run = 'move-node-to-workspace D'
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
 run = 'move-node-to-workspace G'
+
+[[on-window-detected]]
+if.app-id = 'com.valvesoftware.steam'
+run = 'move-node-to-workspace S'
 
 [[on-window-detected]]
 if.app-id = 'com.mitchellh.ghostty'
