@@ -39,13 +39,54 @@ end
 -- Autocmds.
 local group = vim.api.nvim_create_augroup("user", { clear = true })
 
--- Reload files changed on disk, e.g. by an agent in another tmux pane.
-vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
+-- Reload files as soon as they change on disk, e.g. by an agent in another
+-- tmux pane. A buffer with unsaved edits is left alone, so :w still asks
+-- before overwriting the newer file. Watch the directory rather than the file,
+-- because a write that replaces the file by renaming would end a file watch.
+local watchers = {}
+
+local function unwatch(buf)
+	if watchers[buf] then
+		watchers[buf]:close()
+		watchers[buf] = nil
+	end
+end
+
+vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile", "BufWritePost", "BufFilePost" }, {
 	group = group,
-	callback = function()
-		if vim.o.buftype ~= "nofile" then
-			vim.cmd("checktime")
+	callback = function(args)
+		local buf = args.buf
+		unwatch(buf)
+		local path = vim.api.nvim_buf_get_name(buf)
+		if vim.bo[buf].buftype ~= "" or path == "" then
+			return
 		end
+		local name = vim.fs.basename(path)
+		local warned = false
+		local watcher = vim.uv.new_fs_event()
+		local ok = watcher:start(vim.fs.dirname(path), {}, vim.schedule_wrap(function(err, file)
+			if err or vim.fs.basename(file or "") ~= name or not vim.api.nvim_buf_is_valid(buf) then
+				return
+			end
+			if not vim.bo[buf].modified then
+				vim.cmd.checktime(buf)
+			elseif not warned then
+				warned = true
+				vim.notify(name .. " changed on disk. Your edits are kept; :e! loads the new version.", vim.log.levels.WARN)
+			end
+		end))
+		if ok then
+			watchers[buf] = watcher
+		else
+			watcher:close()
+		end
+	end,
+})
+
+vim.api.nvim_create_autocmd("BufWipeout", {
+	group = group,
+	callback = function(args)
+		unwatch(args.buf)
 	end,
 })
 
