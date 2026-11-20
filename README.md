@@ -75,3 +75,6 @@ In AeroSpace, each main app has its own workspace:
 | `ctrl+alt+shift+` the same letter | Send the current window to that workspace, where it splits the screen |
 | `ctrl+alt+left`, `right` | Switch between windows on a workspace |
 | `ctrl+alt+shift+left`, `right` | Swap their sides |
+| `ctrl+alt+1`, `2` | Make the current window a third or two-thirds of the screen wide |
+| `ctrl+alt+0` | Give every window on the workspace the same width again |
+| `ctrl+alt+minus`, `equal` | Shrink or grow the current window |
