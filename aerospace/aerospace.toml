@@ -32,6 +32,13 @@ ctrl-alt-right = 'focus --wrap-around right'
 ctrl-alt-shift-left = 'move left'
 ctrl-alt-shift-right = 'move right'
 
+# Make the current window a third or two-thirds of the screen wide, or grow and
+# shrink it a step at a time.
+ctrl-alt-1 = 'exec-and-forget ~/.config/aerospace/resize-fraction.sh 1 3'
+ctrl-alt-2 = 'exec-and-forget ~/.config/aerospace/resize-fraction.sh 2 3'
+ctrl-alt-minus = 'resize smart -50'
+ctrl-alt-equal = 'resize smart +50'
+
 [[on-window-detected]]
 if.app-id = 'com.anthropic.claudefordesktop'
 run = 'move-node-to-workspace C'

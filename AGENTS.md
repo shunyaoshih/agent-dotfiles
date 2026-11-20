@@ -196,7 +196,9 @@ file is absent, and add a row above.
   Discord's, and LINE and Telegram
   share one, reached with `ctrl+alt+letter`, because AeroSpace's default
   `alt+letter` keys would take over fish's Alt bindings in Ghostty. Other apps
-  float, through a catch-all rule that needs an explicit `if = 'true'`. Apply
+  float, through a catch-all rule that needs an explicit `if = 'true'`.
+  `resize-fraction.sh` sizes the focused window to a fraction of the screen's
+  width, because `resize` takes only pixels. Apply
   changes with `aerospace reload-config`. Test a binding without pressing keys
   using `aerospace trigger-binding --mode main KEYS`.
 - `claude/CLAUDE.md`: the user's global Claude Code instructions, linked as
